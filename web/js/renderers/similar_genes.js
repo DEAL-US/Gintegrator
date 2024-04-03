@@ -1,8 +1,25 @@
 "use strict";
 
-import { parseHTML } from '../utils/parseHTML.js';
-
 const similarGenesRenderer = {
+
+    sgExplanations: function () {
+        let examples = `
+        G0L217<br>
+        B2ZPD3<br>
+        A0A0B5ECY2<br>
+        Q2A799<br>
+        `;
+
+        return `
+        <p class="lead" style="font-size: 1.1em;">
+            Input a valid UniProt identifier to fetch gene clusters or groups that are identical on the specified percentage. Names of the clusters can be retrieved as well.
+            You can find identifier examples
+            <span id='popoverIcon' style="text-decoration: underline;" tabindex="0" data-bs-toggle="popover"
+                data-bs-trigger="manual" title="" data-bs-content='${examples}'>
+                here</span>.
+        </p>    
+        `;
+    },
 
     // HTML form with Bootstrap 4 classes
     sgForm: function () {

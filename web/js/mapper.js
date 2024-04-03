@@ -1,8 +1,5 @@
 "use strict";
 
-import { sessionManager } from './utils/session.js';
-import { parseHTML } from './utils/parseHTML.js';
-
 // Import the necessary API functions
 import { cardAPI } from '/js/api/card.js';
 import { uniprotAPI } from '/js/api/uniprot.js';
@@ -12,17 +9,23 @@ import { ncbiAPI } from '/js/api/ncbi.js';
 import { messageRenderer } from '/js/renderers/messages.js';
 import { mapperRenderer } from '/js/renderers/mapper.js';
 import { commonRenderer } from './renderers/common.js';
+import { commonFunctions } from '/js/utils/commonFunctions.js';
 
 // DOM elements that we will use
+const explanationsContainer = document.getElementById("explanations-container");
 const formContainer = document.getElementById("mapper-form-container");
 const resultsContainer = document.getElementById("mapper-results-container");
 
 // Main function that will run when the page is ready
 function main() {
-    // Hide the options that shouldnt be available for not logged users
-    setLoggedOptions();
 
     loadMapper();
+
+    // Enable Bootstrap popovers
+    commonFunctions.enablePopovers();
+
+    // Enable Bootstrap tooltips
+    commonFunctions.enableTooltips();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -31,6 +34,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 ///////////
 async function loadMapper() {
+
+    // Append the explanations to the explanations container
+    explanationsContainer.innerHTML = mapperRenderer.mapperExplanations();
 
     // Append the form to the employees container
     formContainer.innerHTML = mapperRenderer.mapperForm();
@@ -47,12 +53,6 @@ async function loadMapper() {
     updateSelectOptions();
     document.getElementById('fromDbSelect').addEventListener('change', updateSelectOptions);
     document.getElementById('toDbSelect').addEventListener('change', updateSelectOptions);
-
-    // Enable Bootstrap tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
 
     // Add an event listener to the form
     form.addEventListener('submit', async function (event) {
@@ -83,80 +83,89 @@ async function loadMapper() {
         let identicalProteins = document.getElementById('identicalProteins').checked.toString().toUpperCase();
 
         // Show the loading GIF
-        resultsContainer.innerHTML = commonRenderer.loadingSpinner() + '<br>';
+        resultsContainer.innerHTML = commonRenderer.loadingSpinner();
 
-        let result;
-        try {
-            // Call the corresponding API function based on the selected "from" and "to" databases
-            switch (fromDb) {
-                case 'card':
-                    result = await cardAPI[`getCARD2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
-                    break;
-                case 'uniprot':
-                    result = await uniprotAPI[`getUniProt2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
-                    break;
-                case 'kegg':
-                    result = await keggAPI[`getKEGG2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
-                    break;
-                case 'ncbiProtein':
-                    result = await ncbiAPI[`getNCBIProtein2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
-                    break;
-                case 'ncbiGene':
-                    result = await ncbiAPI[`getNCBIGene2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
-                    break;
-                case 'ncbiNucleotide':
-                    result = await ncbiAPI[`getNCBINucleotide2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
-                    break;
+        // Convert the request data to a string to use as a key
+        let key = JSON.stringify({ id, fromDb, toDb, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins });
+
+        // Try to get the result from localStorage
+        let result = localStorage.getItem(key);
+        let apiSuccess = true;
+
+        if (result) {
+            // If the result is in localStorage, parse it from JSON
+            result = JSON.parse(result);
+        } else {
+            try {
+                // Call the corresponding API function based on the selected "from" and "to" databases
+                switch (fromDb) {
+                    case 'card':
+                        result = await cardAPI[`getCARD2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                        break;
+                    case 'uniprot':
+                        result = await uniprotAPI[`getUniProt2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                        break;
+                    case 'kegg':
+                        result = await keggAPI[`getKEGG2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                        break;
+                    case 'ncbiProtein':
+                        result = await ncbiAPI[`getNCBIProtein2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                        break;
+                    case 'ncbiGene':
+                        result = await ncbiAPI[`getNCBIGene2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                        break;
+                    case 'ncbiNucleotide':
+                        result = await ncbiAPI[`getNCBINucleotide2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                        break;
+                }
+            } catch (e) {
+                resultsContainer.innerHTML = commonRenderer.errorMessageAPI();
+                apiSuccess = false;
             }
-        } catch (e) {
-            messageRenderer.showErrorMessage(e);
         }
 
-        // Append the result to the results container
-        if ((result.constructor == Array && result[0] == null) ||
-            (result.constructor == Array && result[0].constructor == Object && Object.keys(result[0]).length === 0) ||
-            (result.constructor == Object && Object.keys(result).length === 0)) {
-            console.log('aqui')
-            resultsContainer.innerHTML = commonRenderer.noResultsFound();
-        } else {
-            // If detailedMapping == "TRUE" parse result dictionary and replace keys '1.0', '0.9', '0.5' with '100%', '90%', '50%'
-            // Considering that the dictionary may come in an array
-            if (detailedMapping === 'TRUE') {
-                let items = result.constructor == Array ? result : [result];
+        if (apiSuccess) {
+            // Append the result to the results container
+            if ((result.constructor == Array && result[0] == null) ||
+                (result.constructor == Array && result[0].constructor == Object && Object.keys(result[0]).length === 0) ||
+                (result.constructor == Object && Object.keys(result).length === 0)) {
+                resultsContainer.innerHTML = commonRenderer.noResultsFound();
+            } else {
+                // Store the result in localStorage
+                localStorage.setItem(key, JSON.stringify(result));
 
-                for (let i = 0; i < items.length; i++) {
-                    let keys = Object.keys(items[i]);
-                    for (let j = 0; j < keys.length; j++) {
-                        let percentages = {
-                            '1.0': '100%',
-                            '0.9': '90%',
-                            '0.5': '50%'
-                        };
+                // If detailedMapping == "TRUE" parse result dictionary and replace keys '1.0', '0.9', '0.5' with '100%', '90%', '50%'
+                // Considering that the dictionary may come in an array
+                if (detailedMapping === 'TRUE') {
+                    let items = result.constructor == Array ? result : [result];
 
-                        if (percentages[keys[j]]) {
-                            items[i][percentages[keys[j]]] = items[i][keys[j]];
-                            delete items[i][keys[j]];
+                    for (let i = 0; i < items.length; i++) {
+                        let keys = Object.keys(items[i]);
+                        for (let j = 0; j < keys.length; j++) {
+                            let percentages = {
+                                '1.0': '100%',
+                                '0.9': '90%',
+                                '0.5': '50%'
+                            };
+
+                            if (percentages[keys[j]]) {
+                                items[i][percentages[keys[j]]] = items[i][keys[j]];
+                                delete items[i][keys[j]];
+                            }
                         }
+                    }
+
+                    if (result.constructor != Array) {
+                        result = items[0];
                     }
                 }
 
-                if (result.constructor != Array) {
-                    result = items[0];
-                }
+                resultsContainer.innerHTML = mapperRenderer.asIDs(result);
             }
-
-            resultsContainer.innerHTML = mapperRenderer.asIDs(result);
         }
     });
 }
 
-
-function setLoggedOptions() {
-    // Hide the things that shouldnt be available for non authenticated users
-    if (!sessionManager.isLogged()) {
-        // newDpmtButton.style.display = "none";
-    }
-}
 
 function updateSelectOptions() {
     var fromDbSelect = document.getElementById('fromDbSelect');

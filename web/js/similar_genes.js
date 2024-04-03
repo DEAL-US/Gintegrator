@@ -1,16 +1,15 @@
 "use strict";
 
-import { sessionManager } from './utils/session.js';
-import { parseHTML } from './utils/parseHTML.js';
-
 // Import the necessary API functions
 import { uniprotAPI } from '/js/api/uniprot.js';
 
 import { similarGenesRenderer } from '/js/renderers/similar_genes.js';
 import { commonRenderer } from '/js/renderers/common.js';
 import { messageRenderer } from '/js/renderers/messages.js';
+import { commonFunctions } from '/js/utils/commonFunctions.js';
 
 // DOM elements that we will use
+const explanationsContainer = document.getElementById("explanations-container");
 const similarGenesDiv = document.getElementById("similar-genes-div");
 const similarGenesFormContainer = document.getElementById("similar-genes-form-container");
 
@@ -18,6 +17,12 @@ const similarGenesFormContainer = document.getElementById("similar-genes-form-co
 function main() {
 
     loadSimilarGenes();
+
+    // Enable Bootstrap tooltips
+    commonFunctions.enableTooltips();
+
+    // Enable Bootstrap popovers
+    commonFunctions.enablePopovers();
 
 }
 
@@ -28,17 +33,14 @@ document.addEventListener("DOMContentLoaded", function () {
 ///////////
 async function loadSimilarGenes() {
 
+    // Append the explanations to the explanations container
+    explanationsContainer.innerHTML = similarGenesRenderer.sgExplanations();
+
     // Append the form to the form container
     similarGenesFormContainer.innerHTML = similarGenesRenderer.sgForm();
 
     // Get the form element
     let form = document.getElementById('similar-genes-form');
-
-    // Enable Bootstrap tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
 
     // Add an event listener to the form
     form.addEventListener('submit', async function (event) {
@@ -60,28 +62,46 @@ async function loadSimilarGenes() {
 
         // Show the loading spinner
         similarGenesDiv.innerHTML = commonRenderer.loadingSpinner();
-        
-        // Q2A799
-        let result;
-        try {
-            // Call the getUniProtSimilarGenes API function
-            result = await uniprotAPI.getUniProtSimilarGenes(id, clusterIdentity, clusterNames.toString().toUpperCase());
-        } catch (e) {
-            messageRenderer.showErrorMessage(e);
+
+        // Create an object from the variables
+        let requestData = { id, clusterNames, clusterIdentity };
+
+        // Convert the request data to a string to use as a key
+        let key = JSON.stringify(requestData);
+
+        // Try to get the result from localStorage
+        let result = localStorage.getItem(key);
+        let apiSuccess = true;
+
+        if (result) {
+            // If the result is in localStorage, parse it from JSON
+            result = JSON.parse(result);
+        } else {
+            // Q2A799
+            try {
+                // Call the getUniProtSimilarGenes API function
+                result = await uniprotAPI.getUniProtSimilarGenes(id, clusterIdentity, clusterNames.toString().toUpperCase());
+            } catch (e) {
+                similarGenesDiv.innerHTML = commonRenderer.errorMessageAPI();
+                apiSuccess = false;
+            }
         }
 
-        // Check if the result is empty
-        if (result === null ||
-            (Array.isArray(result) && result.length === 0) ||
-            (Array.isArray(result) && result.length === 1 && Object.keys(result[0]).length === 0) ||
-            (Array.isArray(result) && result.length === 1 && Object.values(result[0])[0] && Object.keys(Object.values(result[0])[0]).length === 0)) {
-                similarGenesDiv.innerHTML = commonRenderer.noResultsFound();
-        } else {
-            // Append the result to the similarGenesDiv container
-            if (result === null || result.length === 0 || (result.length === 1 && Object.keys(result[0]).length === 0)) {
+        if (apiSuccess) {
+            // Check if the result is empty
+            if (result === null ||
+                (Array.isArray(result) && result.length === 0) ||
+                (Array.isArray(result) && result.length === 1 && Object.keys(result[0]).length === 0) ||
+                (Array.isArray(result) && result.length === 1 && Object.values(result[0])[0] && Object.keys(Object.values(result[0])[0]).length === 0)) {
                 similarGenesDiv.innerHTML = commonRenderer.noResultsFound();
             } else {
-                similarGenesDiv.innerHTML = similarGenesRenderer.asIDs(result, clusterNames);
+                // Append the result to the similarGenesDiv container
+                if (result === null || result.length === 0 || (result.length === 1 && Object.keys(result[0]).length === 0)) {
+                    similarGenesDiv.innerHTML = commonRenderer.noResultsFound();
+                } else {
+                    localStorage.setItem(key, JSON.stringify(result));
+                    similarGenesDiv.innerHTML = similarGenesRenderer.asIDs(result, clusterNames);
+                }
             }
         }
 

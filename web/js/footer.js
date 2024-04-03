@@ -7,6 +7,13 @@ const footerDeal = document.getElementById("page-footer");
 
 function main() {
     loadFooter();
+
+    // Enable Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -53,7 +60,11 @@ function loadFooter() {
         <br>
         <div class="row">
             <div class="col-md-12 text-center">
-                <p id="year-footer">Copyright ©${currentYear} <a href="https://deal.us.es/">DEAL</a></p>
+                <p id="year-footer">
+                    Copyright ©${currentYear} <a href="https://deal.us.es/">DEAL</a> 
+                    | 
+                    <span data-bs-toggle="tooltip" data-bs-placement="right" title="Facing any issue? Contact us at: fsola@us.es">Contact us</span>
+                </p>
             </div>
         </div>
     </footer><div>

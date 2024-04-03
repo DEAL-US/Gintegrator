@@ -1,8 +1,23 @@
 "use strict";
 
-import { parseHTML } from '../utils/parseHTML.js';
-
 const identicalProteinRenderer = {
+
+    ipExplanations: function () {
+        let examples = `
+        AHA80958<br>
+        76524190<br>
+        WP_010896559<br>
+        `;
+
+        return `
+        <p class="lead" style="font-size: 1.1em;">
+            Provide a valid NCBI identifier to retrieve identical proteins identifiers as a list of them or as a more detailed table (dataframe). You can find identifier examples
+            <span id='popoverIcon' style="text-decoration: underline;" tabindex="0" data-bs-toggle="popover"
+                data-bs-trigger="manual" title="" data-bs-content='${examples}'>
+                here</span>.
+        </p>    
+        `;
+    },
 
     // HTML form with Bootstrap 4 classes
     ipForm: function () {
@@ -70,6 +85,7 @@ const identicalProteinRenderer = {
                 </div>
             </div>
         `;
+        listHTML += '<br>';
         return listHTML;
     },
 
@@ -115,6 +131,7 @@ const identicalProteinRenderer = {
         </tr></thead>`;
         tableHTML += '<tbody>' + result.map(row => '<tr>' + keys.map(key => `<td>${row[key] || ''}</td>`).join('') + '</tr>').join('') + '</tbody>';
         tableHTML += '</table></div>';
+        tableHTML += '<br>';
         return tableHTML;
     },
 

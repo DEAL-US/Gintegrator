@@ -1,8 +1,27 @@
 "use strict";
 
-import { parseHTML } from '../utils/parseHTML.js';
-
 const mapperRenderer = {
+
+    mapperExplanations: function () {
+        let examples = `
+            <b>CARD</b>: ARO:3002535; ARO:3000938<br>
+            <b>NCBI Protein</b>: CAA79696; 76524190; WP_010896559.1<br>
+            <b>NCBI Gene</b>: 76524190; 3510143<br>
+            <b>NCBI Nucleotide</b>: AY536519; JQ394987; Z21488<br>
+            <b>UniProt</b>: G0L217; G9JVE6; Q6R7P5<br>
+            <b>KEGG</b>: ag:ACC85616; aag:5579347; llo:LLO_2673<br>
+        `;
+
+        return `
+        <p class="lead" style="font-size: 1.1em;">
+            Provide a valid identifier to translate between the selected databases with 'From' and 'To'
+            dropdowns. You can find identifier examples
+            <span id='popoverIcon' style="text-decoration: underline;" tabindex="0" data-bs-toggle="popover"
+                data-bs-trigger="manual" title="" data-bs-content='${examples}'>
+                here</span>.
+        </p>    
+        `;
+    },
 
     // HTML form with Bootstrap 4 classes
     mapperForm: function () {
@@ -17,7 +36,9 @@ const mapperRenderer = {
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="idInput">Enter ID:</label>
+                                            <label for="idInput">
+                                                Enter ID:
+                                            </label>
                                             <input type="text" id="idInput" name="idInput" class="form-control" required>
                                         </div>
                                     </div>
@@ -56,7 +77,7 @@ const mapperRenderer = {
                                             <input class="form-check-input" type="checkbox" value="" id="exhaustiveMapping" name="exhaustiveMapping">
                                             <label class="form-check-label" for="exhaustiveMapping">Exhaustive Mapping</label>
                                             <img src="images/info-circle.svg" data-bs-toggle="tooltip" data-bs-placement="right" 
-                                            title="If activated, retrieves all possible translations" class="info-icon">
+                                            title="If activated, retrieves all possible translations (may take some time if combined with Similar Genes and Identical Proteins)" class="info-icon">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -112,7 +133,7 @@ const mapperRenderer = {
 
     asIDs: function (result) {
         // Create a Blob object from the result
-        let blob = new Blob([JSON.stringify(result)], {type: 'application/json'});
+        let blob = new Blob([JSON.stringify(result)], { type: 'application/json' });
 
         // Create a URL for the Blob object
         let url = URL.createObjectURL(blob);

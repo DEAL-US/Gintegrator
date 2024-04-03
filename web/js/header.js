@@ -11,9 +11,11 @@ import { sessionManager } from './utils/session.js';
 // const headerProfile = document.getElementById("header-profile");
 
 function main() {
-    // showUser();
+    // loadTooltips();
     // addLogoutHandler();
     // hideHeaderOptions();
+
+
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -22,11 +24,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-function showUser() {
-    // Greet the user in the navbar
-    let loggedUser = sessionManager.getLoggedUser();
-    let username = loggedUser !== null ? loggedUser.firstName : "Guest";
-    userLink.textContent = "Hi, " + username;
+function loadTooltips() {
+    // Enable Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
 }
 
 function addLogoutHandler() {

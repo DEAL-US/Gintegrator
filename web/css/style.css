@@ -67,11 +67,25 @@ footer {
 
 /* ------------------------------------------------- */
 
-.bs-tooltip-top .tooltip-inner {
-    background-color: #f9f9f9; /* Light gray */
-    color: #333; /* Dark gray */
+.bs-tooltip-top .tooltip-inner,
+.popover .popover-body {
+    background-color: #333; /* Dark gray */
+    color: #f9f9f9; /* Light gray */
+    border-radius: .25rem; /* Rounded corners */
 }
 
-.bs-tooltip-top .arrow::before {
-    border-top-color: #f9f9f9;
+.bs-tooltip-top .arrow::before,
+.popover .arrow::before {
+    border-top-color: #333;
+}
+
+.popover .popover-arrow::after, .popover-arrow::before {
+    border-right-color: #333 !important;
+}
+.popover {
+    max-width: 1000px; /* Adjust this value as needed */
+}
+
+.popover .popover-body {
+    white-space: nowrap;
 }
