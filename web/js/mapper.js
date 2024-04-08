@@ -9,7 +9,7 @@ import { ncbiAPI } from '/js/api/ncbi.js';
 import { messageRenderer } from '/js/renderers/messages.js';
 import { mapperRenderer } from '/js/renderers/mapper.js';
 import { commonRenderer } from './renderers/common.js';
-import { commonFunctions } from '/js/utils/commonFunctions.js';
+import { commonFunctions } from '/js/utils/common_functions.js';
 
 // DOM elements that we will use
 const explanationsContainer = document.getElementById("explanations-container");
@@ -50,9 +50,9 @@ async function loadMapper() {
     document.getElementById('toDbSelect').addEventListener('change', toggleCheckboxes);
 
     // Add an event listener to the "from" and "to" database select input for the options
-    updateSelectOptions();
-    document.getElementById('fromDbSelect').addEventListener('change', updateSelectOptions);
-    document.getElementById('toDbSelect').addEventListener('change', updateSelectOptions);
+    // updateSelectOptions();
+    // document.getElementById('fromDbSelect').addEventListener('change', updateSelectOptions);
+    // document.getElementById('toDbSelect').addEventListener('change', updateSelectOptions);
 
     // Add an event listener to the form
     form.addEventListener('submit', async function (event) {
@@ -60,14 +60,33 @@ async function loadMapper() {
         event.preventDefault();
 
         // Get the ID from the form input
-        let id = document.getElementById('idInput').value;
+        let ids = document.getElementById('idInput').value.split(';').map(id => id.trim());
 
         // Get the selected "from" and "to" databases from the select inputs
         let fromDb = document.getElementById('fromDbSelect').value;
         let toDb = document.getElementById('toDbSelect').value;
 
+        // Add an event listener to the "to" database select element to clear the custom validation message
+        document.getElementById('toDbSelect').addEventListener('change', function () {
+            // Clear the custom validation message
+            this.setCustomValidity('');
+        });
+
+        // Check if the selected "from" and "to" databases are the same
+        if (fromDb == toDb) {
+            // Set a custom validation message
+            document.getElementById('toDbSelect').setCustomValidity('You cannot translate from a database to itself.');
+
+            // Trigger form validation
+            document.getElementById('mapper-form').reportValidity();
+
+            // Exit the function
+            return;
+        }
+
         // Mapping between the select input values and the function names
         let toDbFunctionNames = {
+            'card': 'CARD',
             'uniprot': 'UniProt',
             'kegg': 'KEGG',
             'ncbiProtein': 'NCBIProtein',
@@ -85,84 +104,89 @@ async function loadMapper() {
         // Show the loading GIF
         resultsContainer.innerHTML = commonRenderer.loadingSpinner();
 
-        // Convert the request data to a string to use as a key
-        let key = JSON.stringify({ id, fromDb, toDb, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins });
+        // Loop over the identifiers
+        for (let id of ids) {
+            // Convert the request data to a string to use as a key
+            let key = JSON.stringify({ id, fromDb, toDb, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins });
 
-        // Try to get the result from localStorage
-        let result = localStorage.getItem(key);
-        let apiSuccess = true;
+            // Try to get the result from localStorage
+            let result = localStorage.getItem(key);
+            let apiSuccess = true;
 
-        if (result) {
-            // If the result is in localStorage, parse it from JSON
-            result = JSON.parse(result);
-        } else {
-            try {
-                // Call the corresponding API function based on the selected "from" and "to" databases
-                switch (fromDb) {
-                    case 'card':
-                        result = await cardAPI[`getCARD2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
-                        break;
-                    case 'uniprot':
-                        result = await uniprotAPI[`getUniProt2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
-                        break;
-                    case 'kegg':
-                        result = await keggAPI[`getKEGG2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
-                        break;
-                    case 'ncbiProtein':
-                        result = await ncbiAPI[`getNCBIProtein2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
-                        break;
-                    case 'ncbiGene':
-                        result = await ncbiAPI[`getNCBIGene2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
-                        break;
-                    case 'ncbiNucleotide':
-                        result = await ncbiAPI[`getNCBINucleotide2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
-                        break;
-                }
-            } catch (e) {
-                resultsContainer.innerHTML = commonRenderer.errorMessageAPI();
-                apiSuccess = false;
-            }
-        }
-
-        if (apiSuccess) {
-            // Append the result to the results container
-            if ((result.constructor == Array && result[0] == null) ||
-                (result.constructor == Array && result[0].constructor == Object && Object.keys(result[0]).length === 0) ||
-                (result.constructor == Object && Object.keys(result).length === 0)) {
-                resultsContainer.innerHTML = commonRenderer.noResultsFound();
+            if (result) {
+                // If the result is in localStorage, parse it from JSON
+                result = JSON.parse(result);
             } else {
-                // Store the result in localStorage
-                localStorage.setItem(key, JSON.stringify(result));
+                try {
+                    // Call the corresponding API function based on the selected "from" and "to" databases
+                    switch (fromDb) {
+                        case 'card':
+                            result = await cardAPI[`getCARD2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                            break;
+                        case 'uniprot':
+                            result = await uniprotAPI[`getUniProt2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                            break;
+                        case 'kegg':
+                            result = await keggAPI[`getKEGG2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                            break;
+                        case 'ncbiProtein':
+                            result = await ncbiAPI[`getNCBIProtein2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                            break;
+                        case 'ncbiGene':
+                            result = await ncbiAPI[`getNCBIGene2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                            break;
+                        case 'ncbiNucleotide':
+                            result = await ncbiAPI[`getNCBINucleotide2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                            break;
+                    }
+                } catch (e) {
+                    resultsContainer.innerHTML += commonRenderer.errorMessageAPI(id);
+                    apiSuccess = false;
+                }
+            }
 
-                // If detailedMapping == "TRUE" parse result dictionary and replace keys '1.0', '0.9', '0.5' with '100%', '90%', '50%'
-                // Considering that the dictionary may come in an array
-                if (detailedMapping === 'TRUE') {
-                    let items = result.constructor == Array ? result : [result];
+            if (apiSuccess) {
+                // Append the result to the results container
+                if ((result.constructor == Array && result[0] == null) ||
+                    (result.constructor == Array && result[0].constructor == Object && Object.keys(result[0]).length === 0) ||
+                    (result.constructor == Object && Object.keys(result).length === 0)) {
+                    resultsContainer.innerHTML += commonRenderer.noResultsFound(id);
+                } else {
+                    // Store the result in localStorage
+                    localStorage.setItem(key, JSON.stringify(result));
 
-                    for (let i = 0; i < items.length; i++) {
-                        let keys = Object.keys(items[i]);
-                        for (let j = 0; j < keys.length; j++) {
-                            let percentages = {
-                                '1.0': '100%',
-                                '0.9': '90%',
-                                '0.5': '50%'
-                            };
+                    // If detailedMapping == "TRUE" parse result dictionary and replace keys '1.0', '0.9', '0.5' with '100%', '90%', '50%'
+                    // Considering that the dictionary may come in an array
+                    if (detailedMapping === 'TRUE') {
+                        let items = result.constructor == Array ? result : [result];
 
-                            if (percentages[keys[j]]) {
-                                items[i][percentages[keys[j]]] = items[i][keys[j]];
-                                delete items[i][keys[j]];
+                        for (let i = 0; i < items.length; i++) {
+                            let keys = Object.keys(items[i]);
+                            for (let j = 0; j < keys.length; j++) {
+                                let percentages = {
+                                    '1.0': '100%',
+                                    '0.9': '90%',
+                                    '0.5': '50%'
+                                };
+
+                                if (percentages[keys[j]]) {
+                                    items[i][percentages[keys[j]]] = items[i][keys[j]];
+                                    delete items[i][keys[j]];
+                                }
                             }
+                        }
+
+                        if (result.constructor != Array) {
+                            result = items[0];
                         }
                     }
 
-                    if (result.constructor != Array) {
-                        result = items[0];
-                    }
+                    resultsContainer.innerHTML += mapperRenderer.asIDs(result, id);
                 }
-
-                resultsContainer.innerHTML = mapperRenderer.asIDs(result);
             }
         }
+        // Remove the loading spinner
+        resultsContainer.innerHTML = resultsContainer.innerHTML.replace(commonRenderer.loadingSpinner(), '');
     });
 }
 
@@ -215,6 +239,7 @@ function toggleCheckboxes() {
 // Define a mapping of the databases and the parameters they support
 const databaseCapabilities = {
     'card': {
+        'card': [], // 'card' to 'card' is not supported
         'uniprot': ['exhaustiveMapping', 'detailedMapping'],
         'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes', 'identicalProteins'],
         'ncbiProtein': [],
@@ -222,6 +247,7 @@ const databaseCapabilities = {
         'ncbiNucleotide': []
     },
     'uniprot': {
+        'uniprot': [], // 'uniprot' to 'uniprot' is not supported
         'card': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
         'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
         'ncbiProtein': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
@@ -229,6 +255,7 @@ const databaseCapabilities = {
         'ncbiNucleotide': ['exhaustiveMapping', 'detailedMapping', 'similarGenes']
     },
     'kegg': {
+        'kegg': [], // 'kegg' to 'kegg' is not supported
         'card': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
         'ncbiProtein': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
         'ncbiGene': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
@@ -236,22 +263,25 @@ const databaseCapabilities = {
         'uniprot': ['exhaustiveMapping']
     },
     'ncbiProtein': {
+        'ncbiProtein': [], // 'ncbiProtein' to 'ncbiProtein' is not supported
         'card': ['exhaustiveMapping'],
-        'uniprot': ['exhaustiveMapping', 'detailedMapping', 'byIdenticalProteins'],
+        'uniprot': ['exhaustiveMapping', 'detailedMapping', 'identicalProteins'],
         'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes', 'identicalProteins'],
         'ncbiGene': ['exhaustiveMapping'],
         'ncbiNucleotide': ['exhaustiveMapping']
     },
     'ncbiNucleotide': {
+        'ncbiNucleotide': [], // 'ncbiNucleotide' to 'ncbiNucleotide' is not supported
         'card': ['exhaustiveMapping'],
-        'uniprot': ['exhaustiveMapping', 'detailedMapping', 'byIdenticalProteins'],
+        'uniprot': ['exhaustiveMapping', 'detailedMapping', 'identicalProteins'],
         'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes', 'identicalProteins'],
         'ncbiGene': ['exhaustiveMapping'],
         'ncbiProtein': ['exhaustiveMapping']
     },
     'ncbiGene': {
+        'ncbiGene': [], // 'ncbiGene' to 'ncbiGene' is not supported
         'card': ['exhaustiveMapping'],
-        'uniprot': ['exhaustiveMapping', 'detailedMapping', 'byIdenticalProteins'],
+        'uniprot': ['exhaustiveMapping', 'detailedMapping', 'identicalProteins'],
         'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes', 'identicalProteins'],
         'ncbiProtein': ['exhaustiveMapping'],
         'ncbiNucleotide': ['exhaustiveMapping']

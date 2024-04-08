@@ -89,3 +89,16 @@ footer {
 .popover .popover-body {
     white-space: nowrap;
 }
+
+/* ------------------------------------------------- */
+
+.clipb-span {
+    display: inline-block;
+    margin-bottom: 5px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.clipb {
+    margin-left: 3px;
+}

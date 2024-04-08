@@ -4,19 +4,44 @@ const mapperRenderer = {
 
     mapperExplanations: function () {
         let examples = `
-            <b>CARD</b>: ARO:3002535; ARO:3000938<br>
-            <b>NCBI Protein</b>: CAA79696; 76524190; WP_010896559.1<br>
-            <b>NCBI Gene</b>: 76524190; 3510143<br>
-            <b>NCBI Nucleotide</b>: AY536519; JQ394987; Z21488<br>
-            <b>UniProt</b>: G0L217; G9JVE6; Q6R7P5<br>
-            <b>KEGG</b>: ag:ACC85616; aag:5579347; llo:LLO_2673<br>
+        <b>CARD</b>: <span class="clipb-span">ARO:3002535</span>; <span class="clipb-span">ARO:3000938</span>
+        <br>
+        <b>NCBI Protein</b>: <span class="clipb-span">CAA79696</span>; <span class="clipb-span">76524190</span>; <span class="clipb-span">WP_010896559.1</span>
+        <br>
+        <b>NCBI Gene</b>: <span class="clipb-span">76524190</span>; <span class="clipb-span">3510143</span>
+        <br>
+        <b>NCBI Nucleotide</b>: <span class="clipb-span">AY536519</span>; <span class="clipb-span">JQ394987</span>; <span class="clipb-span">Z21488</span>
+        <br>
+        <b>UniProt</b>: <span class="clipb-span">G0L217</span>; <span class="clipb-span">G9JVE6</span>; <span class="clipb-span">Q6R7P5</span>
+        <br>
+        <b>KEGG</b>: <span class="clipb-span">ag:ACC85616</span>; <span class="clipb-span">aag:5579347</span>; <span class="clipb-span">llo:LLO_2673</span>
+        `;
+
+        let deprecated = `
+        <span class="clipb-span"><b>CARD</b>: ARO:3002535; ARO:3000938
+        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
+        
+        <span class="clipb-span"><b>NCBI Protein</b>: CAA79696; 76524190; WP_010896559.1 
+        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
+        
+        <span class="clipb-span"><b>NCBI Gene</b>: 76524190; 3510143
+        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
+
+        <span class="clipb-span"><b>NCBI Nucleotide</b>: AY536519; JQ394987; Z21488 
+        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
+
+        <span class="clipb-span"><b>UniProt</b>: G0L217; G9JVE6; Q6R7P5 
+        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
+
+        <span class="clipb-span"><b>KEGG</b>: ag:ACC85616; aag:5579347; llo:LLO_2673 
+        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
         `;
 
         return `
         <p class="lead" style="font-size: 1.1em;">
             Provide a valid identifier to translate between the selected databases with 'From' and 'To'
             dropdowns. You can find identifier examples
-            <span id='popoverIcon' style="text-decoration: underline;" tabindex="0" data-bs-toggle="popover"
+            <span id='popoverIcon' style="text-decoration: underline; cursor: pointer;" tabindex="0" data-bs-toggle="popover"
                 data-bs-trigger="manual" title="" data-bs-content='${examples}'>
                 here</span>.
         </p>    
@@ -39,7 +64,7 @@ const mapperRenderer = {
                                             <label for="idInput">
                                                 Enter ID:
                                             </label>
-                                            <input type="text" id="idInput" name="idInput" class="form-control" required>
+                                            <input type="text" id="idInput" name="idInput" class="form-control" placeholder="identifier1; identifier2; identifier3..." required>
                                         </div>
                                     </div>
                                 </div>
@@ -131,7 +156,7 @@ const mapperRenderer = {
         `;
     },
 
-    asIDs: function (result) {
+    asIDs: function (result, id) {
         // Create a Blob object from the result
         let blob = new Blob([JSON.stringify(result)], { type: 'application/json' });
 
@@ -139,13 +164,21 @@ const mapperRenderer = {
         let url = URL.createObjectURL(blob);
 
         let listHTML = `
-            <div class="row justify-content-center">
-                <div class="col-md-6 text-end">
-                    <button class="btn btn-secondary" type="button" id="downloadButton">
-                        <a href="${url}" download="result.json" style="color: inherit; text-decoration: none;">Download JSON</a>
-                    </button>      
-                </div>
-            </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-7 mx-auto">
+                <div class="card mt-2 mx-auto p-4 bg-light">
+                    <div class="card-body bg-light">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6 text-center pt-2">
+                                    <h5>${id}</h5>
+                                </div>
+                                <div class="col-md-6 text-end my-auto">
+                                    <button class="btn btn-secondary" type="button" id="downloadButton">
+                                        <a href="${url}" download="result.json" style="color: inherit; text-decoration: none;">Download JSON</a>
+                                    </button>      
+                                </div>
+                            </div>
         `;
 
         if (Array.isArray(result)) {
@@ -154,10 +187,12 @@ const mapperRenderer = {
                 let identifiers = result;
                 listHTML += `
                     <div class="row justify-content-center mt-3">
-                        <div class="col-md-6">
-                            <ul class="list-group">
-                                ${identifiers.map(id => `<li class="list-group-item">${id.trim()}</li>`).join('')}
-                            </ul>
+                        <div class="col-md-12">
+                            <div style="max-height: 500px; overflow-y: auto;">
+                                <ul class="list-group">
+                                    ${identifiers.map(id => `<li class="list-group-item">${id.trim()}</li>`).join('')}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -166,10 +201,12 @@ const mapperRenderer = {
                 result.forEach(identifiers => {
                     listHTML += `
                         <div class="row justify-content-center mt-3">
-                            <div class="col-md-6">
-                                <ul class="list-group">
-                                    ${identifiers.map(id => `<li class="list-group-item">${id.trim()}</li>`).join('')}
-                                </ul>
+                            <div class="col-md-12">
+                                <div style="max-height: 500px; overflow-y: auto;">
+                                    <ul class="list-group">
+                                        ${identifiers.map(id => `<li class="list-group-item">${id.trim()}</li>`).join('')}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -181,11 +218,13 @@ const mapperRenderer = {
                         let identifiers = obj[clusterName];
                         listHTML += `
                             <div class="row justify-content-center mt-3">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <h5>${clusterName}</h5>
-                                    <ul class="list-group">
-                                        ${identifiers.map(id => `<li class="list-group-item">${id.trim()}</li>`).join('')}
-                                    </ul>
+                                    <div style="max-height: 500px; overflow-y: auto;">
+                                        <ul class="list-group">
+                                            ${identifiers.map(id => `<li class="list-group-item">${id.trim()}</li>`).join('')}
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -198,17 +237,25 @@ const mapperRenderer = {
                 let identifiers = result[clusterName];
                 listHTML += `
                     <div class="row justify-content-center mt-3">
-                        <div class="col-md-6">
-                            <h5>${clusterName}</h5>
-                            <ul class="list-group">
-                                ${identifiers.map(id => `<li class="list-group-item">${id.trim()}</li>`).join('')}
-                            </ul>
+                        <div class="col-md-12">
+                            <h5>${clusterName}</h5>blabla
+                            <div style="max-height: 500px; overflow-y: auto;">
+                                <ul class="list-group">
+                                    ${identifiers.map(id => `<li class="list-group-item">${id.trim()}</li>`).join('')}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 `;
             }
         }
-        listHTML += '<br><br>';
+        listHTML += `
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <br>`;
         return listHTML;
     }
 };

@@ -6,7 +6,7 @@ import { uniprotAPI } from '/js/api/uniprot.js';
 import { similarGenesRenderer } from '/js/renderers/similar_genes.js';
 import { commonRenderer } from '/js/renderers/common.js';
 import { messageRenderer } from '/js/renderers/messages.js';
-import { commonFunctions } from '/js/utils/commonFunctions.js';
+import { commonFunctions } from '/js/utils/common_functions.js';
 
 // DOM elements that we will use
 const explanationsContainer = document.getElementById("explanations-container");
@@ -48,7 +48,7 @@ async function loadSimilarGenes() {
         event.preventDefault();
 
         // Get the form inputs
-        let id = document.getElementById('idInput').value;
+        let ids = document.getElementById('idInput').value.split(';').map(id => id.trim());
         let clusterNames = document.getElementById('clusterNamesInput').checked;
 
         let clusterIdentityInputs = document.getElementsByName('clusterIdentityInput');
@@ -63,47 +63,51 @@ async function loadSimilarGenes() {
         // Show the loading spinner
         similarGenesDiv.innerHTML = commonRenderer.loadingSpinner();
 
-        // Create an object from the variables
-        let requestData = { id, clusterNames, clusterIdentity };
+        // Loop over the identifiers
+        for (let id of ids) {
+            // Create an object from the variables
+            let requestData = { id, clusterNames, clusterIdentity };
 
-        // Convert the request data to a string to use as a key
-        let key = JSON.stringify(requestData);
+            // Convert the request data to a string to use as a key
+            let key = JSON.stringify(requestData);
 
-        // Try to get the result from localStorage
-        let result = localStorage.getItem(key);
-        let apiSuccess = true;
+            // Try to get the result from localStorage
+            let result = localStorage.getItem(key);
+            let apiSuccess = true;
 
-        if (result) {
-            // If the result is in localStorage, parse it from JSON
-            result = JSON.parse(result);
-        } else {
-            // Q2A799
-            try {
-                // Call the getUniProtSimilarGenes API function
-                result = await uniprotAPI.getUniProtSimilarGenes(id, clusterIdentity, clusterNames.toString().toUpperCase());
-            } catch (e) {
-                similarGenesDiv.innerHTML = commonRenderer.errorMessageAPI();
-                apiSuccess = false;
-            }
-        }
-
-        if (apiSuccess) {
-            // Check if the result is empty
-            if (result === null ||
-                (Array.isArray(result) && result.length === 0) ||
-                (Array.isArray(result) && result.length === 1 && Object.keys(result[0]).length === 0) ||
-                (Array.isArray(result) && result.length === 1 && Object.values(result[0])[0] && Object.keys(Object.values(result[0])[0]).length === 0)) {
-                similarGenesDiv.innerHTML = commonRenderer.noResultsFound();
+            if (result) {
+                // If the result is in localStorage, parse it from JSON
+                result = JSON.parse(result);
             } else {
-                // Append the result to the similarGenesDiv container
-                if (result === null || result.length === 0 || (result.length === 1 && Object.keys(result[0]).length === 0)) {
-                    similarGenesDiv.innerHTML = commonRenderer.noResultsFound();
+                // Q2A799
+                try {
+                    // Call the getUniProtSimilarGenes API function
+                    result = await uniprotAPI.getUniProtSimilarGenes(id, clusterIdentity, clusterNames.toString().toUpperCase());
+                } catch (e) {
+                    similarGenesDiv.innerHTML += commonRenderer.errorMessageAPI(id);
+                    apiSuccess = false;
+                }
+            }
+
+            if (apiSuccess) {
+                // Check if the result is empty
+                if (result === null ||
+                    (Array.isArray(result) && result.length === 0) ||
+                    (Array.isArray(result) && result.length === 1 && Object.keys(result[0]).length === 0) ||
+                    (Array.isArray(result) && result.length === 1 && Object.values(result[0])[0] && Object.keys(Object.values(result[0])[0]).length === 0)) {
+                    similarGenesDiv.innerHTML += commonRenderer.noResultsFound(id);
                 } else {
-                    localStorage.setItem(key, JSON.stringify(result));
-                    similarGenesDiv.innerHTML = similarGenesRenderer.asIDs(result, clusterNames);
+                    // Append the result to the similarGenesDiv container
+                    if (result === null || result.length === 0 || (result.length === 1 && Object.keys(result[0]).length === 0)) {
+                        similarGenesDiv.innerHTML += commonRenderer.noResultsFound(id);
+                    } else {
+                        localStorage.setItem(key, JSON.stringify(result));
+                        similarGenesDiv.innerHTML += similarGenesRenderer.asIDs(result, clusterNames, id);
+                    }
                 }
             }
         }
-
+        // Remove the loading spinner
+        similarGenesDiv.innerHTML = similarGenesDiv.innerHTML.replace(commonRenderer.loadingSpinner(), '');
     });
 }

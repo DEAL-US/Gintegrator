@@ -4,17 +4,29 @@ const similarGenesRenderer = {
 
     sgExplanations: function () {
         let examples = `
-        G0L217<br>
-        B2ZPD3<br>
-        A0A0B5ECY2<br>
-        Q2A799<br>
+        <span class="clipb-span">G0L217</span><br>
+        <span class="clipb-span">B2ZPD3</span><br>
+        <span class="clipb-span">A0A0B5ECY2</span><br>
+        <span class="clipb-span">Q2A799</span><br>
         `;
+
+        let deprecated = `
+        <span class="clipb-span">G0L217 
+        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
+        <span class="clipb-span">B2ZPD3
+        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
+        <span class="clipb-span">A0A0B5ECY2
+        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
+        <span class="clipb-span">Q2A799
+        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
+        `;
+
 
         return `
         <p class="lead" style="font-size: 1.1em;">
             Input a valid UniProt identifier to fetch gene clusters or groups that are identical on the specified percentage. Names of the clusters can be retrieved as well.
             You can find identifier examples
-            <span id='popoverIcon' style="text-decoration: underline;" tabindex="0" data-bs-toggle="popover"
+            <span id='popoverIcon' style="text-decoration: underline; cursor: pointer;" tabindex="0" data-bs-toggle="popover"
                 data-bs-trigger="manual" title="" data-bs-content='${examples}'>
                 here</span>.
         </p>    
@@ -35,7 +47,7 @@ const similarGenesRenderer = {
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="idInput">Enter ID:</label>
-                                            <input type="text" id="idInput" name="idInput" class="form-control" required>
+                                            <input type="text" id="idInput" name="idInput" class="form-control" placeholder="identifier1; identifier2; identifier3..." required>
                                         </div>
                                     </div>
                                 </div>
@@ -98,21 +110,32 @@ const similarGenesRenderer = {
         `;
     },
 
-    asIDs: function (result, clusterNames) {
+    asIDs: function (result, clusterNames, id) {
         // Create a Blob object from the result
-        let blob = new Blob([JSON.stringify(result)], {type: 'application/json'});
+        let blob = new Blob([JSON.stringify(result)], { type: 'application/json' });
 
         // Create a URL for the Blob object
         let url = URL.createObjectURL(blob);
 
         let listHTML = `
-            <div class="row justify-content-center">
-                <div class="col-md-6 text-end">
-                    <button class="btn btn-secondary" type="button" id="downloadButton">
-                        <a href="${url}" download="result.json" style="color: inherit; text-decoration: none;">Download JSON</a>
-                    </button>      
-                </div>
-            </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-7 mx-auto">
+                <div class="card mt-2 mx-auto p-4 bg-light">
+                    <div class="card-body bg-light">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6 text-center pt-2">
+                                    <h5>${id}</h5>
+                                </div>
+                                <div class="col-md-6 text-end my-aut">
+                                    <button class="btn btn-secondary" type="button" id="downloadButton">
+                                        <a href="${url}" download="result.json" style="color: inherit; text-decoration: none;">Download JSON</a>
+                                    </button>      
+                                </div>
+                            </div>
+                        
+
+            
         `;
 
         if (clusterNames) {
@@ -121,11 +144,13 @@ const similarGenesRenderer = {
                 let identifiers = result[0][clusterName].join(', ');
                 listHTML += `
                     <div class="row justify-content-center mt-3">
-                        <div class="col-md-6">
-                            <h5>${clusterName}</h5>
-                            <ul class="list-group">
-                                ${identifiers.split(',').map(id => `<li class="list-group-item">${id.trim()}</li>`).join('')}
-                            </ul>
+                        <div class="col-md-12">
+                            <h5>Cluster ${clusterName}</h5>
+                            <div style="max-height: 500px; overflow-y: auto;">
+                                <ul class="list-group">
+                                    ${identifiers.split(',').map(id => `<li class="list-group-item">${id.trim()}</li>`).join('')}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -135,19 +160,27 @@ const similarGenesRenderer = {
             let identifiers = result[0];
             listHTML += `
                     <div class="row justify-content-center mt-3">
-                        <div class="col-md-6">
-                            <ul class="list-group">
-                                ${identifiers.map(id => `<li class="list-group-item">${id.trim()}</li>`).join('')}
-                            </ul>
+                        <div class="col-md-12">
+                            <div style="max-height: 500px; overflow-y: auto;">
+                                <ul class="list-group">
+                                    ${identifiers.map(id => `<li class="list-group-item">${id.trim()}</li>`).join('')}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 `;
         }
-        listHTML += '<br><br>';
+        listHTML += `
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>`;
         return listHTML;
     },
 
-    noResultsFound: function() {
+    noResultsFound: function () {
         return '<div class="alert alert-info" role="alert">No results found.</div>';
     }
 };

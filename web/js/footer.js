@@ -63,7 +63,7 @@ function loadFooter() {
                 <p id="year-footer">
                     Copyright ©${currentYear} <a href="https://deal.us.es/">DEAL</a> 
                     | 
-                    <span data-bs-toggle="tooltip" data-bs-placement="right" title="Facing any issue? Contact us at: fsola@us.es">Contact us</span>
+                    <span data-bs-toggle="tooltip" style="text-decoration: underline; cursor: pointer;" data-bs-placement="right" title="Facing any issue? Contact us at: fsola@us.es">Contact us</span>
                 </p>
             </div>
         </div>
