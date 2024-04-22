@@ -132,6 +132,62 @@ footer {
 
 /* ------------------------------------------------- */
 
+.iproteins-diagram {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.iproteins-logo {
+    max-width: 110px; /* adjust as needed */
+    max-height: 100px; /* adjust as needed */
+    width: auto;
+    height: auto;
+    margin-right: 20px; /* adjust as needed */
+}
+
+/* ------------------------------------------------- */
+
+.simgenes-diagram {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.simgenes-logo {
+    max-width: 110px; /* adjust as needed */
+    max-height: 100px; /* adjust as needed */
+    width: auto;
+    height: auto;
+    margin-right: 20px; /* adjust as needed */
+}
+
+.simgenes-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    position: relative;
+    top: 0px; /* adjust as needed */
+    margin-right: 1.5em;
+}
+
+.simgenes-logo {
+    max-width: 125px; /* adjust as needed */
+    max-height: 100px; /* adjust as needed */
+    width: auto;
+    height: auto;
+    padding-left: 1em;
+}
+
+.simgenes-id {
+    display: block;
+}
+
+/* ------------------------------------------------- */
+
+
 .translation-diagram {
     display: flex;
     align-items: center;
@@ -223,4 +279,17 @@ footer {
     .mt-xs-3 {
         margin-top: 1rem; /* adjust as needed */
     }
+}
+
+@media (max-width: 992px) {
+    .navbar-collapse .navbar-nav {
+      justify-content: center !important;
+      margin-bottom: 0em !important;
+    }
+  }
+
+/* ------------------------------------------------- */
+
+#history-params:empty {
+    display: none;
 }

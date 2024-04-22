@@ -125,17 +125,27 @@ const similarGenesRenderer = {
 
         let listHTML = `
         <div class="row justify-content-center">
-            <div class="col-lg-7 mx-auto">
+            <div class="col-12 col-md-12 col-lg-9 col-xl-7 mx-auto">
                 <div class="card mt-2 mx-auto bg-light">
                     <div class="card-header py-3">
                         <div class="row">
-                            <div class="col-md-6 pt-2">
-                                <h5>${id}</h5>
+                            <div class="col-12 col-sm-8 col-md-7 col-lg-8 pt-2">
+                                <div class="simgenes-diagram">
+                                    <div class="simgenes-center">
+                                        <img src="/images/uniprot_logo.png" alt="uniprot_logo" class="simgenes-logo">
+                                        <span class="simgenes-id">${clusterIdentity}% similar genes</span>
+                                    </div>
+                                        <h5>${id}</h5>
+                                </div>
                             </div>
-                            <div class="col-md-6 text-end my-aut">
+                            <div class="col-12 col-sm-4 col-md-5 col-lg-4 text-end my-auto">
                                 <button class="btn btn-secondary" type="button" id="downloadButton">
                                     <a href="${url}" download="${id}_similar_genes_${clusterIdentity}.json" style="color: inherit; text-decoration: none;">Download JSON</a>
                                 </button>      
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="history-params" class="col-12">
                             </div>
                         </div>
                     </div>
@@ -160,7 +170,7 @@ const similarGenesRenderer = {
                 listHTML += `
                     <div class="row justify-content-center mt-1">
                         <div class="col-md-12">
-                            <h5>Cluster ${clusterName}</h5>
+                            <h5 class="mb-3">Cluster ${clusterName}</h5>
                             <div style="max-height: 500px; overflow-y: auto;">
                                 <ul class="list-group">
                                     ${mapIdentifiers(identifiers.split(','))}

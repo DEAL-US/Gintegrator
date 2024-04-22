@@ -44,6 +44,9 @@ async function loadIdenticalProteins() {
     // Get the form element
     let form = document.getElementById('identical-proteins-form');
 
+    // Render previous results from localStorage
+    commonFunctions.renderPreviousResults('iproteins');
+
     // Add an event listener to the form
     form.addEventListener('submit', async function (event) {
         // Prevent the form from submitting normally
@@ -90,15 +93,33 @@ async function loadIdenticalProteins() {
                         // Access the inner array and remove duplicated identifiers
                         result[0] = result[0].filter((value, index, self) => self.indexOf(value) === index);
 
-                        localStorage.setItem(key, JSON.stringify(result));
+                        // Append the result to the results container
                         identicalProteinsDiv.innerHTML += identicalProteinRenderer.asIDs(result, id);
+
+                        // Add the result to the history if it is not already there
+                        if (!localStorage.getItem(key)) {
+                            commonFunctions.addToHistory(identicalProteinRenderer.asIDs(result, id));
+                        };
+
+                        // Store the result in localStorage
+                        localStorage.setItem(key, JSON.stringify(result));
                     }
                 } else { // format === 'dataframe'
                     if (Object.keys(result).length === 0) {
                         identicalProteinsDiv.innerHTML += commonRenderer.noResultsFound(id);
                     } else {
-                        localStorage.setItem(key, JSON.stringify(result));
+
+                        // Append the result to the results container
                         identicalProteinsDiv.innerHTML += identicalProteinRenderer.asDataframe(result, id);
+
+                        // Add the result to the history if it is not already there
+                        if (!localStorage.getItem(key)) {
+                            commonFunctions.addToHistory(identicalProteinRenderer.asDataframe(result, id));
+                        };
+
+                        // Store the result in localStorage
+                        localStorage.setItem(key, JSON.stringify(result));
+
                     }
                 }
             }

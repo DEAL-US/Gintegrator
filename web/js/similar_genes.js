@@ -45,6 +45,9 @@ async function loadSimilarGenes() {
     // Get the form element
     let form = document.getElementById('similar-genes-form');
 
+    // Render previous results from localStorage
+    commonFunctions.renderPreviousResults('sgenes');
+
     // Add an event listener to the form
     form.addEventListener('submit', async function (event) {
         // Prevent the form from submitting normally
@@ -104,8 +107,16 @@ async function loadSimilarGenes() {
                     if (result === null || result.length === 0 || (result.length === 1 && Object.keys(result[0]).length === 0)) {
                         similarGenesDiv.innerHTML += commonRenderer.noResultsFound(id);
                     } else {
-                        localStorage.setItem(key, JSON.stringify(result));
+                        // Append the result to the results container
                         similarGenesDiv.innerHTML += similarGenesRenderer.asIDs(result, clusterNames, id, clusterIdentity);
+
+                        // Add the result to the history if it is not already there
+                        if (!localStorage.getItem(key)) {
+                            commonFunctions.addToHistory(similarGenesRenderer.asIDs(result, clusterNames, id, clusterIdentity));
+                        };
+
+                        // Store the result in localStorage
+                        localStorage.setItem(key, JSON.stringify(result));
                     }
                 }
             }

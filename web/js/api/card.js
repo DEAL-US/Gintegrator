@@ -20,7 +20,7 @@ const cardAPI = {
         let response = await axios.get(`${BASE_URL}/card/${cardId}/uniprot?exhaustiveMapping=${exhaustiveMapping}&detailedMapping=${detailedMapping}`);
         return response.data;
     },
-    getCARD2KEGG: async function (cardId, exhaustiveMapping = false, detailedMapping = false, byIdenticalProteins = true, bySimilarGenes = true) {
+    getCARD2KEGG: async function (cardId, exhaustiveMapping = false, detailedMapping = false, bySimilarGenes = true, byIdenticalProteins = true) {
         let response = await axios.get(`${BASE_URL}/card/${cardId}/kegg?exhaustiveMapping=${exhaustiveMapping}&detailedMapping=${detailedMapping}&byIdenticalProteins=${byIdenticalProteins}&bySimilarGenes=${bySimilarGenes}`);
         return response.data;
     }

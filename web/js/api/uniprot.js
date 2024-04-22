@@ -8,7 +8,7 @@ const uniprotAPI = {
         let response = await axios.get(`${BASE_URL}/similarGenes/${upId}?clusterIdentity=${clusterIdentity}&clusterNames=${clusterNames}`);
         return response.data;
     },
-    getUniProt2KEGG: async function (upId, exhaustiveMapping = false, bySimilarGenes = true, detailedMapping = false) {
+    getUniProt2KEGG: async function (upId, exhaustiveMapping = false, detailedMapping = false, bySimilarGenes = true) {
         let response = await axios.get(`${BASE_URL}/uniprot/${upId}/kegg?exhaustiveMapping=${exhaustiveMapping}&bySimilarGenes=${bySimilarGenes}&detailedMapping=${detailedMapping}`);
         return response.data;
     },

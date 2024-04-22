@@ -95,18 +95,24 @@ const identicalProteinRenderer = {
         let listHTML = `
 
         <div class="row justify-content-center">
-            <div class="col-lg-7 mx-auto">
+            <div class="col-12 col-md-12 col-lg-9 col-xl-7 mx-auto">
                 <div class="card mt-2 mx-auto bg-light">
                     <div class="card-header py-3">
-                        
                         <div class="row">
-                            <div class="col-md-6 pt-2">
-                                <h5>${id}</h5>
+                            <div class="col-12 col-sm-8 col-md-7 col-lg-8 pt-2">
+                                <div class="iproteins-diagram">
+                                    <img src="/images/ncbiProteinGroups_logo.png" alt="ncbiProteinGroups_logo" class="iproteins-logo">
+                                        <h5>${id}</h5>
+                                </div>
                             </div>
-                            <div class="col-md-6 text-end my-auto">
+                            <div class="col-12 col-sm-4 col-md-5 col-lg-4 text-end my-auto">
                                 <button class="btn btn-secondary" type="button" id="downloadButton">
                                     <a href="${url}" download="${id}_identical_proteins_ids.json" style="color: inherit; text-decoration: none;">Download JSON</a>
                                 </button>      
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="history-params" class="col-12">
                             </div>
                         </div>
                     </div>
@@ -119,7 +125,7 @@ const identicalProteinRenderer = {
                                         <ul class="list-group">
                                             ${mapIdentifiers(result)}
                                         </ul>
-                                    <div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -150,16 +156,23 @@ const identicalProteinRenderer = {
 
         <div class="row justify-content-center">
             <div class="col-lg-12 mx-auto">
-                <div class="card mx-auto bg-light">
+                <div class="card mt-2 mx-auto bg-light">
                     <div class="card-header py-3">
                         <div class="row justify-content-center">
-                            <div class="col-md-9 pt-2">
-                                <h5>${id}</h5>   
+                            <div class="col-12 col-sm-8 col-md-9 col-lg-9 pt-2">
+                                <div class="iproteins-diagram">
+                                    <img src="/images/ncbiProteinGroups_logo.png" alt="ncbiProteinGroups_logo" class="iproteins-logo">
+                                        <h5>${id}</h5>
+                                </div>
                             </div>
-                            <div class="col-md-3 text-end">
+                            <div class="col-12 col-sm-4 col-md-3 col-lg-3 text-end my-auto">
                                 <button class="btn btn-secondary" type="button" id="downloadButton">
                                     <a href="${url}" download="${id}_identical_proteins_dataframe.csv" style="color: inherit; text-decoration: none;">Download CSV</a>
                                 </button>      
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="history-params" class="col-12">
                             </div>
                         </div>
                     </div>
@@ -168,9 +181,9 @@ const identicalProteinRenderer = {
 
         keys = ['Id', 'Source', 'Nucleotide.Accession', 'Start', 'Stop', 'Strand', 'Protein', 'Protein.Name', 'Organism', 'Strain', 'Assembly'];
         tableHTML += `
-            <div class="table-responsive mt-2" style="position: relative; max-height: 500px; overflow-y: auto; overflow-x: scroll; border: 2px solid #eee;">
-                <table class="table">
-                    <thead style="position: sticky; top: 0; background-color: white">
+            <div class="table-responsive mt-2" style="position: relative; max-height: 500px; overflow: auto; border: 2px solid #eee;">
+            <table class="table ">
+                <thead style="position: sticky; top: 0; background-color: white">
                         <tr style="box-shadow: 0 1px 0 #aaa;">
                             <th>Id</th>
                             <th>Source</th>
@@ -186,9 +199,9 @@ const identicalProteinRenderer = {
                         </tr>
                     </thead>`;
         tableHTML += '<tbody>' + result.map(row => '<tr>' + keys.map(key => `<td>${row[key] || ''}</td>`).join('') + '</tr>').join('') + '</tbody>';
-        tableHTML += `
+        tableHTML += `        
                                 </table>
-                            </div>
+                            </div>                        
                         </div>
                     </div>
                 </div>

@@ -11,6 +11,9 @@ import { mapperRenderer } from '/js/renderers/mapper.js';
 import { commonRenderer } from './renderers/common.js';
 import { commonFunctions } from '/js/utils/common_functions.js';
 
+// Import databaseCapabilities dictionary
+import { databaseCapabilities } from '/js/utils/common_functions.js';
+
 // DOM elements that we will use
 const explanationsContainer = document.getElementById("explanations-container");
 const formContainer = document.getElementById("mapper-form-container");
@@ -56,6 +59,9 @@ async function loadMapper() {
     // updateSelectOptions();
     // document.getElementById('fromDbSelect').addEventListener('change', updateSelectOptions);
     // document.getElementById('toDbSelect').addEventListener('change', updateSelectOptions);
+
+    // Render previous results from localStorage
+    commonFunctions.renderPreviousResults('mapper');
 
     // Add an event listener to the form
     form.addEventListener('submit', async function (event) {
@@ -104,13 +110,15 @@ async function loadMapper() {
         let similarGenes = document.getElementById('similarGenes').checked.toString().toUpperCase();
         let identicalProteins = document.getElementById('identicalProteins').checked.toString().toUpperCase();
 
+        console.log(detailedMapping);
+
         // Show the loading GIF
         resultsContainer.innerHTML = commonRenderer.loadingSpinner();
 
         // Loop over the identifiers
         for (let id of ids) {
             // Convert the request data to a string to use as a key
-            let key = JSON.stringify({ id, fromDb, toDb, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins });
+            let key = JSON.stringify({id, fromDb, toDb, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins});
 
             // Try to get the result from localStorage
             let result = localStorage.getItem(key);
@@ -124,22 +132,22 @@ async function loadMapper() {
                     // Call the corresponding API function based on the selected "from" and "to" databases
                     switch (fromDb) {
                         case 'card':
-                            result = await cardAPI[`getCARD2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                            result = await cardAPI[`getCARD2${toDbFunctionName}`](id, exhaustiveMapping=exhaustiveMapping, detailedMapping=detailedMapping, similarGenes=similarGenes, identicalProteins=identicalProteins);
                             break;
                         case 'uniprot':
-                            result = await uniprotAPI[`getUniProt2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                            result = await uniprotAPI[`getUniProt2${toDbFunctionName}`](id, exhaustiveMapping=exhaustiveMapping, detailedMapping=detailedMapping, similarGenes=similarGenes, identicalProteins=identicalProteins);
                             break;
                         case 'kegg':
-                            result = await keggAPI[`getKEGG2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                            result = await keggAPI[`getKEGG2${toDbFunctionName}`](id, exhaustiveMapping=exhaustiveMapping, detailedMapping=detailedMapping, similarGenes=similarGenes, identicalProteins=identicalProteins);
                             break;
                         case 'ncbiProtein':
-                            result = await ncbiAPI[`getNCBIProtein2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                            result = await ncbiAPI[`getNCBIProtein2${toDbFunctionName}`](id, exhaustiveMapping=exhaustiveMapping, detailedMapping=detailedMapping, similarGenes=similarGenes, identicalProteins=identicalProteins);
                             break;
                         case 'ncbiGene':
-                            result = await ncbiAPI[`getNCBIGene2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                            result = await ncbiAPI[`getNCBIGene2${toDbFunctionName}`](id, exhaustiveMapping=exhaustiveMapping, detailedMapping=detailedMapping, similarGenes=similarGenes, identicalProteins=identicalProteins);
                             break;
                         case 'ncbiNucleotide':
-                            result = await ncbiAPI[`getNCBINucleotide2${toDbFunctionName}`](id, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins);
+                            result = await ncbiAPI[`getNCBINucleotide2${toDbFunctionName}`](id, exhaustiveMapping=exhaustiveMapping, detailedMapping=detailedMapping, similarGenes=similarGenes, identicalProteins=identicalProteins);
                             break;
                     }
                 } catch (e) {
@@ -155,8 +163,6 @@ async function loadMapper() {
                     (result.constructor == Object && Object.keys(result).length === 0)) {
                     resultsContainer.innerHTML += commonRenderer.noResultsFound(id);
                 } else {
-                    // Store the result in localStorage
-                    localStorage.setItem(key, JSON.stringify(result));
 
                     // If detailedMapping == "TRUE" parse result dictionary and replace keys '1.0', '0.9', '0.5' with '100%', '90%', '50%'
                     // Considering that the dictionary may come in an array
@@ -167,9 +173,10 @@ async function loadMapper() {
                             let keys = Object.keys(items[i]);
                             for (let j = 0; j < keys.length; j++) {
                                 let percentages = {
-                                    '1.0': '100%',
-                                    '0.9': '90%',
-                                    '0.5': '50%'
+                                    'DT': 'Direct translation',
+                                    '1.0': '100% similar',
+                                    '0.9': '90% similar',
+                                    '0.5': '50% similar'
                                 };
 
                                 if (percentages[keys[j]]) {
@@ -184,7 +191,16 @@ async function loadMapper() {
                         }
                     }
 
+                    // Append the result to the results container
                     resultsContainer.innerHTML += mapperRenderer.asIDs(result, id, fromDb, toDb);
+                    
+                    // Add the result to the history if it is not already there
+                    if(!localStorage.getItem(key)){
+                        commonFunctions.addToHistory(mapperRenderer.asIDs(result, id, fromDb, toDb));
+                    };
+
+                    // Store the result in localStorage
+                    localStorage.setItem(key, JSON.stringify(result));
                 }
             }
         }
@@ -239,69 +255,3 @@ function toggleCheckboxes() {
     document.getElementById('identicalProteins').disabled = !capabilities.includes('identicalProteins');
 }
 
-// Define a mapping of the databases and the parameters they support
-const databaseCapabilities = {
-    'default': {
-        'card': [], // 'card' to 'card' is not supported
-        'uniprot': [],
-        'kegg': [],
-        'ncbiProtein': [],
-        'ncbiGene': [],
-        'ncbiNucleotide': [],
-        'default': []
-    },
-    'card': {
-        'card': [], // 'card' to 'card' is not supported
-        'uniprot': ['exhaustiveMapping', 'detailedMapping'],
-        'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes', 'identicalProteins'],
-        'ncbiProtein': [],
-        'ncbiGene': ['exhaustiveMapping'],
-        'ncbiNucleotide': [],
-        'default': []
-    },
-    'uniprot': {
-        'uniprot': [], // 'uniprot' to 'uniprot' is not supported
-        'card': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
-        'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
-        'ncbiProtein': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
-        'ncbiGene': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
-        'ncbiNucleotide': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
-        'default': []
-    },
-    'kegg': {
-        'kegg': [], // 'kegg' to 'kegg' is not supported
-        'card': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
-        'ncbiProtein': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
-        'ncbiGene': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
-        'ncbiNucleotide': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
-        'uniprot': ['exhaustiveMapping'],
-        'default': []
-    },
-    'ncbiProtein': {
-        'ncbiProtein': [], // 'ncbiProtein' to 'ncbiProtein' is not supported
-        'card': ['exhaustiveMapping'],
-        'uniprot': ['exhaustiveMapping', 'detailedMapping', 'identicalProteins'],
-        'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes', 'identicalProteins'],
-        'ncbiGene': ['exhaustiveMapping'],
-        'ncbiNucleotide': ['exhaustiveMapping'],
-        'default': []
-    },
-    'ncbiNucleotide': {
-        'ncbiNucleotide': [], // 'ncbiNucleotide' to 'ncbiNucleotide' is not supported
-        'card': ['exhaustiveMapping'],
-        'uniprot': ['exhaustiveMapping', 'detailedMapping', 'identicalProteins'],
-        'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes', 'identicalProteins'],
-        'ncbiGene': ['exhaustiveMapping'],
-        'ncbiProtein': ['exhaustiveMapping'],
-        'default': []
-    },
-    'ncbiGene': {
-        'ncbiGene': [], // 'ncbiGene' to 'ncbiGene' is not supported
-        'card': ['exhaustiveMapping'],
-        'uniprot': ['exhaustiveMapping', 'detailedMapping', 'identicalProteins'],
-        'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes', 'identicalProteins'],
-        'ncbiProtein': ['exhaustiveMapping'],
-        'ncbiNucleotide': ['exhaustiveMapping'],
-        'default': []
-    }
-};

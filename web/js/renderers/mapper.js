@@ -168,7 +168,7 @@ const mapperRenderer = {
 
         let listHTML = `
         <div class="row justify-content-center">
-            <div class="col-lg-7 mx-auto">
+            <div class="col-12 col-md-12 col-lg-9 col-xl-7 mx-auto">
                 <div class="card mt-2 mx-auto bg-light">
                     <div class="card-header py-3">
                         <div class="row">
@@ -186,6 +186,10 @@ const mapperRenderer = {
                                 <button class="btn btn-secondary" type="button" id="downloadButton">
                                     <a href="${url}" download="${id}_${fromDb}_to_${toDb}.json" style="color: inherit; text-decoration: none;">Download JSON</a>
                                 </button>      
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="history-params" class="col-12">
                             </div>
                         </div>
                     </div>
