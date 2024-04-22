@@ -22,10 +22,13 @@ function main() {
     loadMapper();
 
     // Enable Bootstrap popovers
-    commonFunctions.enablePopovers();
+    // commonFunctions.enablePopovers();
 
     // Enable Bootstrap tooltips
     commonFunctions.enableTooltips();
+
+    // Enable clicking examples
+    commonFunctions.enableMapperClickingExamples();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -181,7 +184,7 @@ async function loadMapper() {
                         }
                     }
 
-                    resultsContainer.innerHTML += mapperRenderer.asIDs(result, id);
+                    resultsContainer.innerHTML += mapperRenderer.asIDs(result, id, fromDb, toDb);
                 }
             }
         }
@@ -238,13 +241,23 @@ function toggleCheckboxes() {
 
 // Define a mapping of the databases and the parameters they support
 const databaseCapabilities = {
+    'default': {
+        'card': [], // 'card' to 'card' is not supported
+        'uniprot': [],
+        'kegg': [],
+        'ncbiProtein': [],
+        'ncbiGene': [],
+        'ncbiNucleotide': [],
+        'default': []
+    },
     'card': {
         'card': [], // 'card' to 'card' is not supported
         'uniprot': ['exhaustiveMapping', 'detailedMapping'],
         'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes', 'identicalProteins'],
         'ncbiProtein': [],
         'ncbiGene': ['exhaustiveMapping'],
-        'ncbiNucleotide': []
+        'ncbiNucleotide': [],
+        'default': []
     },
     'uniprot': {
         'uniprot': [], // 'uniprot' to 'uniprot' is not supported
@@ -252,7 +265,8 @@ const databaseCapabilities = {
         'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
         'ncbiProtein': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
         'ncbiGene': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
-        'ncbiNucleotide': ['exhaustiveMapping', 'detailedMapping', 'similarGenes']
+        'ncbiNucleotide': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
+        'default': []
     },
     'kegg': {
         'kegg': [], // 'kegg' to 'kegg' is not supported
@@ -260,7 +274,8 @@ const databaseCapabilities = {
         'ncbiProtein': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
         'ncbiGene': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
         'ncbiNucleotide': ['exhaustiveMapping', 'detailedMapping', 'similarGenes'],
-        'uniprot': ['exhaustiveMapping']
+        'uniprot': ['exhaustiveMapping'],
+        'default': []
     },
     'ncbiProtein': {
         'ncbiProtein': [], // 'ncbiProtein' to 'ncbiProtein' is not supported
@@ -268,7 +283,8 @@ const databaseCapabilities = {
         'uniprot': ['exhaustiveMapping', 'detailedMapping', 'identicalProteins'],
         'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes', 'identicalProteins'],
         'ncbiGene': ['exhaustiveMapping'],
-        'ncbiNucleotide': ['exhaustiveMapping']
+        'ncbiNucleotide': ['exhaustiveMapping'],
+        'default': []
     },
     'ncbiNucleotide': {
         'ncbiNucleotide': [], // 'ncbiNucleotide' to 'ncbiNucleotide' is not supported
@@ -276,7 +292,8 @@ const databaseCapabilities = {
         'uniprot': ['exhaustiveMapping', 'detailedMapping', 'identicalProteins'],
         'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes', 'identicalProteins'],
         'ncbiGene': ['exhaustiveMapping'],
-        'ncbiProtein': ['exhaustiveMapping']
+        'ncbiProtein': ['exhaustiveMapping'],
+        'default': []
     },
     'ncbiGene': {
         'ncbiGene': [], // 'ncbiGene' to 'ncbiGene' is not supported
@@ -284,6 +301,7 @@ const databaseCapabilities = {
         'uniprot': ['exhaustiveMapping', 'detailedMapping', 'identicalProteins'],
         'kegg': ['exhaustiveMapping', 'detailedMapping', 'similarGenes', 'identicalProteins'],
         'ncbiProtein': ['exhaustiveMapping'],
-        'ncbiNucleotide': ['exhaustiveMapping']
+        'ncbiNucleotide': ['exhaustiveMapping'],
+        'default': []
     }
 };

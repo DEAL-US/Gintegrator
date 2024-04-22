@@ -22,7 +22,10 @@ function main() {
     commonFunctions.enableTooltips();
 
     // Enable Bootstrap popovers
-    commonFunctions.enablePopovers();
+    // commonFunctions.enablePopovers();
+
+    // Enable clicking examples
+    commonFunctions.enableClickingExamples();
 
 }
 
@@ -102,7 +105,7 @@ async function loadSimilarGenes() {
                         similarGenesDiv.innerHTML += commonRenderer.noResultsFound(id);
                     } else {
                         localStorage.setItem(key, JSON.stringify(result));
-                        similarGenesDiv.innerHTML += similarGenesRenderer.asIDs(result, clusterNames, id);
+                        similarGenesDiv.innerHTML += similarGenesRenderer.asIDs(result, clusterNames, id, clusterIdentity);
                     }
                 }
             }

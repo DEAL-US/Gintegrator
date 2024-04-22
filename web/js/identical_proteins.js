@@ -22,7 +22,10 @@ function main() {
     commonFunctions.enableTooltips();
 
     // Enable Bootstrap popovers
-    commonFunctions.enablePopovers();
+    // commonFunctions.enablePopovers();
+
+    // Enable clicking examples
+    commonFunctions.enableClickingExamples();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -47,7 +50,7 @@ async function loadIdenticalProteins() {
         event.preventDefault();
 
         // Get the form inputs
-        let ids = document.getElementById('idInput').value.split(';').map(id => id.trim()); 
+        let ids = document.getElementById('idInput').value.split(';').map(id => id.trim());
         let format = document.getElementById('formatSelect').value;
 
         // Show the loading spinner

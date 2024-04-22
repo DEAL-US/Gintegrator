@@ -43,11 +43,13 @@ span.footer-text {
     font-style: italic;
 }
 
-html, body {
+html,
+body {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow-x: hidden;
+    /* Prevent horizontal scrolling */
 }
 
 body {
@@ -62,16 +64,20 @@ footer {
 }
 
 .navbar-custom {
-    background-color: #eee; /* Replace with your desired color */
+    background-color: #eee;
+    /* Replace with your desired color */
 }
 
 /* ------------------------------------------------- */
 
 .bs-tooltip-top .tooltip-inner,
 .popover .popover-body {
-    background-color: #333; /* Dark gray */
-    color: #f9f9f9; /* Light gray */
-    border-radius: .25rem; /* Rounded corners */
+    background-color: #333;
+    /* Dark gray */
+    color: #f9f9f9;
+    /* Light gray */
+    border-radius: .25rem;
+    /* Rounded corners */
 }
 
 .bs-tooltip-top .arrow::before,
@@ -79,11 +85,14 @@ footer {
     border-top-color: #333;
 }
 
-.popover .popover-arrow::after, .popover-arrow::before {
+.popover .popover-arrow::after,
+.popover-arrow::before {
     border-right-color: #333 !important;
 }
+
 .popover {
-    max-width: 1000px; /* Adjust this value as needed */
+    max-width: 1000px;
+    /* Adjust this value as needed */
 }
 
 .popover .popover-body {
@@ -101,4 +110,117 @@ footer {
 
 .clipb {
     margin-left: 3px;
+}
+
+@media (max-width: 992px) {
+    .navbar-collapse .navbar-nav {
+        justify-content: center !important;
+        margin-bottom: 1.5em;
+    }
+}
+
+.nav-link {
+    justify-content: center !important;
+}
+
+.example-text {
+    font-size: 0.8rem;
+    color: grey;
+    padding-top: 5px;
+    /* font-family: 'Comc Sans MS', sans-serif; */
+}
+
+/* ------------------------------------------------- */
+
+.translation-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.translation-logo {
+    max-width: 110px; /* adjust as needed */
+    max-height: 100px; /* adjust as needed */
+    width: auto;
+    height: auto;
+}
+.translation-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    position: relative;
+    top: -12px; /* adjust as needed */
+}
+
+.translation-id {
+    display: block;
+}
+
+.translation-arrow {
+    display: block;
+    position: relative;
+    width: 80px; /* adjust as needed */
+    border-bottom: 3px solid black; /* adjust as needed */
+    top: 10px; /* adjust as needed */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.translation-arrow::after {
+    content: "";
+    position: absolute;
+    right: -9px;
+    top: -5px; /* adjust as needed */
+    border-width: 7px; /* adjust as needed */
+    border-style: solid;
+    border-color: transparent transparent transparent black;
+}
+
+/* ------------------------------------------------- */
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* adjust as needed */
+    margin-bottom: 20px; /* adjust as needed */
+    margin-top: 10px; /* adjust as needed */
+
+}
+
+.db-logo {
+    max-height: 70px; /* adjust as needed */
+    width: auto;
+    height: auto;
+}
+
+/* ------------------------------------------------- */
+
+.custom-button {
+    background-color: #6c757d; /* Bootstrap secondary color */
+    color: white;
+    border: none;
+    padding: 15px 27px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 25px; /* larger border radius for a pill-like shape */
+    transition: background-color 0.3s ease; /* transition for a smooth hover effect */
+}
+
+.custom-button:hover {
+    background-color: #5a6268; /* darker shade of the Bootstrap secondary color */
+}
+
+/* ------------------------------------------------- */
+
+@media (max-width: 767.98px) {
+    .mt-xs-3 {
+        margin-top: 1rem; /* adjust as needed */
+    }
 }
