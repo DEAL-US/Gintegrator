@@ -3,37 +3,6 @@
 const mapperRenderer = {
 
     mapperExplanations: function () {
-        let examples = `
-
-        `;
-
-        let deprecated = `
-        <span class="clipb-span"><b>CARD</b>: ARO:3002535; ARO:3000938
-        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
-        
-        <span class="clipb-span"><b>NCBI Protein</b>: CAA79696; 76524190; WP_010896559.1 
-        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
-        
-        <span class="clipb-span"><b>NCBI Gene</b>: 76524190; 3510143
-        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
-
-        <span class="clipb-span"><b>NCBI Nucleotide</b>: AY536519; JQ394987; Z21488 
-        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
-
-        <span class="clipb-span"><b>UniProt</b>: G0L217; G9JVE6; Q6R7P5 
-        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
-
-        <span class="clipb-span"><b>KEGG</b>: ag:ACC85616; aag:5579347; llo:LLO_2673 
-        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
-        <p class="lead" style="font-size: 1.1em;">
-        Provide a valid identifier to translate between the selected databases with 'From' and 'To'
-        dropdowns. You can find identifier examples
-        <span id='popoverIcon' style="text-decoration: underline; cursor: pointer;" tabindex="0" data-bs-toggle="popover"
-            data-bs-trigger="manual" title="" data-bs-content='${examples}'>
-            here</span>.
-        </p>  
-        `;
-
         return `
         <p class="lead" style="font-size: 1.1em;">
             First, choose the databases from which you want to translate and to which you want to translate. Then, provide a valid identifier of the 'From' database. You can use ; to provide several of them.

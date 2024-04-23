@@ -6,7 +6,6 @@ import { uniprotAPI } from '/js/api/uniprot.js';
 import { keggAPI } from '/js/api/kegg.js';
 import { ncbiAPI } from '/js/api/ncbi.js';
 
-import { messageRenderer } from '/js/renderers/messages.js';
 import { mapperRenderer } from '/js/renderers/mapper.js';
 import { commonRenderer } from './renderers/common.js';
 import { commonFunctions } from '/js/utils/common_functions.js';
@@ -54,11 +53,6 @@ async function loadMapper() {
     toggleCheckboxes();
     document.getElementById('fromDbSelect').addEventListener('change', toggleCheckboxes);
     document.getElementById('toDbSelect').addEventListener('change', toggleCheckboxes);
-
-    // Add an event listener to the "from" and "to" database select input for the options
-    // updateSelectOptions();
-    // document.getElementById('fromDbSelect').addEventListener('change', updateSelectOptions);
-    // document.getElementById('toDbSelect').addEventListener('change', updateSelectOptions);
 
     // Render previous results from localStorage
     commonFunctions.renderPreviousResults('mapper');
@@ -110,7 +104,6 @@ async function loadMapper() {
         let similarGenes = document.getElementById('similarGenes').checked.toString().toUpperCase();
         let identicalProteins = document.getElementById('identicalProteins').checked.toString().toUpperCase();
 
-        console.log(detailedMapping);
 
         // Show the loading GIF
         resultsContainer.innerHTML = commonRenderer.loadingSpinner();
@@ -196,7 +189,7 @@ async function loadMapper() {
                     
                     // Add the result to the history if it is not already there
                     if(!localStorage.getItem(key)){
-                        commonFunctions.addToHistory(mapperRenderer.asIDs(result, id, fromDb, toDb));
+                        commonFunctions.addToHistory(mapperRenderer.asIDs(result, id, fromDb, toDb), key);
                     };
 
                     // Store the result in localStorage
@@ -207,37 +200,6 @@ async function loadMapper() {
         // Remove the loading spinner
         resultsContainer.innerHTML = resultsContainer.innerHTML.replace(commonRenderer.loadingSpinner(), '');
     });
-}
-
-
-function updateSelectOptions() {
-    var fromDbSelect = document.getElementById('fromDbSelect');
-    var toDbSelect = document.getElementById('toDbSelect');
-
-    var fromDb = fromDbSelect.value;
-    var toDb = toDbSelect.value;
-
-    // Enable all options
-    for (let i = 0; i < fromDbSelect.options.length; i++) {
-        fromDbSelect.options[i].disabled = false;
-        toDbSelect.options[i].disabled = false;
-    }
-
-    // Disable the same option in the "to" select as the selected option in the "from" select
-    for (let i = 0; i < toDbSelect.options.length; i++) {
-        if (toDbSelect.options[i].value === fromDb) {
-            toDbSelect.options[i].disabled = true;
-            break;
-        }
-    }
-
-    // Disable the same option in the "from" select as the selected option in the "to" select
-    for (let i = 0; i < fromDbSelect.options.length; i++) {
-        if (fromDbSelect.options[i].value === toDb) {
-            fromDbSelect.options[i].disabled = true;
-            break;
-        }
-    }
 }
 
 function toggleCheckboxes() {

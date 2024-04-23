@@ -5,7 +5,6 @@ import { ncbiAPI } from '/js/api/ncbi.js';
 
 import { identicalProteinRenderer } from '/js/renderers/identical_proteins.js';
 import { commonRenderer } from '/js/renderers/common.js';
-import { messageRenderer } from '/js/renderers/messages.js';
 import { commonFunctions } from '/js/utils/common_functions.js';
 
 // DOM elements that we will use
@@ -98,7 +97,7 @@ async function loadIdenticalProteins() {
 
                         // Add the result to the history if it is not already there
                         if (!localStorage.getItem(key)) {
-                            commonFunctions.addToHistory(identicalProteinRenderer.asIDs(result, id));
+                            commonFunctions.addToHistory(identicalProteinRenderer.asIDs(result, id), key);
                         };
 
                         // Store the result in localStorage
@@ -114,7 +113,7 @@ async function loadIdenticalProteins() {
 
                         // Add the result to the history if it is not already there
                         if (!localStorage.getItem(key)) {
-                            commonFunctions.addToHistory(identicalProteinRenderer.asDataframe(result, id));
+                            commonFunctions.addToHistory(identicalProteinRenderer.asDataframe(result, id), key);
                         };
 
                         // Store the result in localStorage

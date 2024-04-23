@@ -3,25 +3,6 @@
 const identicalProteinRenderer = {
 
     ipExplanations: function () {
-
-        let examples = '';
-        let deprecated = `
-        <span class="clipb-span">AHA80958 
-        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
-        <span class="clipb-span">76524190
-        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
-        <span class="clipb-span">WP_010896559
-        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
-        <span class="clipb-span">ABK33456
-        <a href="#" class="clipb"><i class="fa fa-clone fa-inverse" aria-hidden="true"></i></a></span>
-        <p class="lead" style="font-size: 1.1em;">
-        Provide a valid NCBI identifier or a list of them separated by ; to retrieve identical proteins identifiers as a list of them or as a more detailed table (dataframe). You can find identifier examples
-        <span id='popoverIcon' style="text-decoration: underline; cursor: pointer;" tabindex="0" data-bs-toggle="popover"
-            data-bs-trigger="manual" title="" data-bs-content='${examples}'>
-            here</span>.
-        </p>    
-        `;
-
         return `
         <p class="lead" style="font-size: 1.1em;">
             Provide a valid NCBI identifier or a list of them separated by ; to retrieve identical proteins identifiers as a list of them or as a more detailed table (dataframe).

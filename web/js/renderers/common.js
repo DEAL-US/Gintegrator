@@ -14,14 +14,6 @@ const commonRenderer = {
     },
 
     errorMessageAPI: function (id) {
-        // return `
-        // <div class="container">
-        //     <div class="row justify-content-center">
-        //         <div class="col-lg-7 mx-auto">
-        //             <div class="alert alert-danger" role="alert">Database error, please try again. If the error persists, please let us know.</div>
-        //         </div>
-        //     </div>
-        // </div>`;
 
         return `
         <div class="row justify-content-center">
@@ -49,17 +41,6 @@ const commonRenderer = {
         </div>
         <br>`;
     },
-
-    // noResultsFound: function () {
-    //     return `
-    //     <div class="container">
-    //         <div class="row justify-content-center">
-    //             <div class="col-lg-7 mx-auto">
-    //                 <div class="alert alert-info" role="alert">No results found.</div>
-    //             </div>
-    //         </div>
-    //     </div>`;
-    // },
 
     noResultsFound: function(id) {
         return `

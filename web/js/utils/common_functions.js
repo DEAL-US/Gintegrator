@@ -109,23 +109,6 @@ const commonFunctions = {
                                 input.value += '; ' + text;
                             }
                         }
-
-                        // navigator.clipboard.writeText(text).then(function () {
-                        //     // Store the original text
-                        //     var originalText = button.previousSibling.textContent;
-                        //     // Hide the button
-                        //     button.style.display = 'none';
-                        //     // Replace the text with "Copied!"
-                        //     button.previousSibling.textContent = ' Copied to clipboard!';
-                        //     // Change the text back to the original text after 2 seconds
-                        //     setTimeout(function () {
-                        //         button.previousSibling.textContent = originalText;
-                        //         button.style.display = 'inline';
-                        //     }, 1500);
-                        // }, function (err) {
-                        //     console.error('Could not copy text: ', err);
-                        // });
-
                     });
                 });
                 // Add event listener to the document to hide the popover when clicking outside of it
@@ -248,10 +231,59 @@ const commonFunctions = {
     addClipboardEventListeners: function () {
     },
 
-    addToHistory: function (resultHTML) {
+    // Function to add the result to the history on the go
+    addToHistory: function (resultHTML, requestData) {
+        // Parse string requestData into JSON
+        requestData = JSON.parse(requestData);
+
+        // Add the parameters used in the request to the resultHTML if it is mapper
+        if (requestData.hasOwnProperty('fromDb') && requestData.hasOwnProperty('toDb')) {
+            resultHTML = this.addHistoryParameters(resultHTML, requestData);
+        }
+
         let historyAccordionBody = document.getElementById('historyAccordionBody');
+        if (historyAccordionBody.innerHTML === '<div style="opacity: 0.5">No results yet.</div>') {
+            historyAccordionBody.innerHTML = '';
+        }
         historyAccordionBody.innerHTML += resultHTML;
     },
+
+    // Function to add the parameters used in each request in the history 
+    addHistoryParameters: function (htmlElement, requestData) {
+        let parametersHTML = `
+                <div class="row mt-3">`;
+
+        // Get the available parameters for the selected databases
+        let availableParameters = databaseCapabilities[requestData.fromDb][requestData.toDb];
+
+        let count = 0;
+        for (let key in requestData) {
+            // Ignore the "id" parameter and parameters not available for the selected databases
+            if (key !== 'id' && (availableParameters.length > 0 && availableParameters.includes(key))) {
+
+                if (requestData[key] === 'TRUE' || requestData[key] === 'FALSE') {
+                    parametersHTML += `
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-4 ps-auto">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" ${requestData[key] === 'TRUE' ? 'checked' : ''} disabled>
+                                        <label class="form-check-label" style="opacity:1;">${key.replace(/([A-Z])/g, ' $1').replace(/^./, function (str) { return str.toUpperCase(); })}</label>
+                                    </div>
+                                </div>
+                            `;
+                    count++;
+                }
+            }
+        }
+        parametersHTML += `</div>`;
+        if (count === 0) {
+            parametersHTML = '<div></div>';
+        }
+        // Select the element with id "history-parameters" in htmlElement, add the parametersHTML to it and return the new htmlElement
+        let doc = (new DOMParser()).parseFromString(htmlElement, "text/html");
+        doc.getElementById('history-params').innerHTML = parametersHTML;
+        return ((new XMLSerializer()).serializeToString(doc));
+    },
+
 
 
     renderPreviousResults: function (historyType) {
@@ -281,42 +313,6 @@ const commonFunctions = {
         let resultHTML = '';
         let historyAccordionBody = document.getElementById('historyAccordionBody');
 
-        // Function to add the parameters used in each request in the history 
-        function addHistoryParameters(htmlElement, requestData) {
-            let parametersHTML = `
-            <div class="row mt-3">`;
-
-            // Get the available parameters for the selected databases
-            let availableParameters = databaseCapabilities[requestData.fromDb][requestData.toDb];
-
-            let count = 0;
-            for (let key in requestData) {
-                // Ignore the "id" parameter and parameters not available for the selected databases
-                if (key !== 'id' && (availableParameters.length > 0 && availableParameters.includes(key))) {
-
-                    if (requestData[key] === 'TRUE' || requestData[key] === 'FALSE') {
-                        parametersHTML += `
-                            <div class="col-12 col-sm-6 col-md-6 col-lg-4 ps-auto">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" ${requestData[key] === 'TRUE' ? 'checked' : ''} disabled>
-                                    <label class="form-check-label" style="opacity:1;">${key.replace(/([A-Z])/g, ' $1').replace(/^./, function (str) { return str.toUpperCase(); })}</label>
-                                </div>
-                            </div>
-                        `;
-                        count++;
-                    }
-                }
-            }
-            parametersHTML += `</div>`;
-            if (count === 0) {
-                parametersHTML = '<div></div>';
-            }
-            // Select the element with id "history-parameters" in htmlElement, add the parametersHTML to it and return the new htmlElement
-            let doc = (new DOMParser()).parseFromString(htmlElement, "text/html");
-            doc.getElementById('history-params').innerHTML = parametersHTML;
-            return ((new XMLSerializer()).serializeToString(doc));
-        }
-
         // Loop over the keys
         for (let key of keys) {
             // Parse the key from JSON
@@ -330,7 +326,7 @@ const commonFunctions = {
                     let result = JSON.parse(localStorage.getItem(key));
 
                     // Append the result to the results container
-                    resultHTML += addHistoryParameters(mapperRenderer.asIDs(result, requestData.id, requestData.fromDb, requestData.toDb), requestData);
+                    resultHTML += this.addHistoryParameters(mapperRenderer.asIDs(result, requestData.id, requestData.fromDb, requestData.toDb), requestData);
                 }
             } else if (historyType === 'iproteins') {
                 // Check if the key is an identical proteins key
@@ -355,8 +351,8 @@ const commonFunctions = {
                     resultHTML += similarGenesRenderer.asIDs(result, requestData.clusterNames, requestData.id, requestData.clusterIdentity);
                 }
             }
-
         }
+        if (resultHTML === '') { resultHTML = '<div style="opacity: 0.5">No results yet.</div>'; }
         historyAccordionBody.innerHTML = resultHTML;
     },
 };

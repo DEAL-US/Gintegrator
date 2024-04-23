@@ -5,7 +5,6 @@ import { uniprotAPI } from '/js/api/uniprot.js';
 
 import { similarGenesRenderer } from '/js/renderers/similar_genes.js';
 import { commonRenderer } from '/js/renderers/common.js';
-import { messageRenderer } from '/js/renderers/messages.js';
 import { commonFunctions } from '/js/utils/common_functions.js';
 
 // DOM elements that we will use
@@ -112,7 +111,7 @@ async function loadSimilarGenes() {
 
                         // Add the result to the history if it is not already there
                         if (!localStorage.getItem(key)) {
-                            commonFunctions.addToHistory(similarGenesRenderer.asIDs(result, clusterNames, id, clusterIdentity));
+                            commonFunctions.addToHistory(similarGenesRenderer.asIDs(result, clusterNames, id, clusterIdentity), key);
                         };
 
                         // Store the result in localStorage
