@@ -27,9 +27,9 @@
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1"
    inkscape:document-units="in"
-   inkscape:zoom="1.9523587"
-   inkscape:cx="260.71028"
-   inkscape:cy="83.488755"
+   inkscape:zoom="2.7610523"
+   inkscape:cx="410.71297"
+   inkscape:cy="83.663754"
    inkscape:window-width="2880"
    inkscape:window-height="1676"
    inkscape:window-x="-12"
@@ -63,7 +63,8 @@
    v:index="1"
    v:groupContext="foregroundPage"
    id="g7"
-   transform="translate(0,-10.5)">
+   transform="translate(0,-10.5)"
+   style="opacity:0.6">
 		<title
    id="title1">Página-1</title>
 		<v:pageProperties
