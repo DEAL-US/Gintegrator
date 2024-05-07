@@ -1,14 +1,14 @@
-## gIntegrator
-<b>gIntegrator</b> is a web application that provides functionalities for translating gene or protein identifiers across various biological sequence databases, including CARD, NCBI Protein, Nucleotide and Gene, UniProt, and KEGG. It allows for easy mapping of identifiers across these databases, ensuring access to the most accurate and up-to-date information.
+## Gintegrator
+<b>Gintegrator</b> is a web application that provides functionalities for translating gene or protein identifiers across various biological sequence databases, including CARD, NCBI Protein, Nucleotide and Gene, UniProt, and KEGG. It allows for easy mapping of identifiers across these databases, ensuring access to the most accurate and up-to-date information.
 
-In addition to identifier mapping, gIntegrator also offers the retrieval of NCBI identical proteins or UniProt similar genes clusters. This makes it a valuable tool for researchers, bioinformaticians, and anyone interested in gene and protein data.
+In addition to identifier mapping, Gintegrator also offers the retrieval of NCBI identical proteins or UniProt similar genes clusters. This makes it a valuable tool for researchers, bioinformaticians, and anyone interested in gene and protein data.
 
 This application is built upon the ginmappeR R language package, available at the <a     href="https://bioconductor.org/packages/ginmappeR">Bioconductor repository</a>. The package provides the core functionalities for identifier translation, which this web application makes accessible through a user-friendly interface.
 
 ### Usage
 #### Online
 
-Visit the online <a href="https://gin.us.es">gIntegrator app</a> deployment.
+Visit the online <a href="https://gin.us.es">Gintegrator app</a> deployment.
 
 #### Local
 
@@ -34,16 +34,16 @@ install('plumber')
 plumb(file='inst/plumber/ginmappeR-API-server/plumber.R')$run(port=1234, swagger=FALSE)
 ```
 
-3. Download gIntegrator project and configure `/web/js/api/common.js` with the selected port (by default it is ``1234``):
+3. Download Gintegrator project and configure `/web/js/api/common.js` with the selected port (by default it is ``1234``):
 
 ```
 const BASE_URL = "http://localhost:1234";
 ```
 
-4. Serve gIntegrator with your preferred web server (e.g. NGINX) or deploy it with python <a href="https://github.com/DEAL-US/Silence">Silence</a> framework:
+4. Serve Gintegrator with your preferred web server (e.g. NGINX) or deploy it with python <a href="https://github.com/DEAL-US/Silence">Silence</a> framework:
 
 ```
-### In the gIntegrator folder
+### In the Gintegrator folder
 $ silence run
 ```
 
@@ -51,9 +51,9 @@ $ silence run
 
 ### License 
 
-gIntegrator is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+Gintegrator is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-gIntegrator is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+Gintegrator is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 
 

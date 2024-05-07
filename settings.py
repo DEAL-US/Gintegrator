@@ -1,5 +1,5 @@
 ###############################################################################
-# gIntegrator settings for Silence deployment
+# Gintegrator settings for Silence deployment
 ###############################################################################
 
 # Shows debug messages while Silence is running
