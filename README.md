@@ -1,19 +1,26 @@
 <p align="center">
     <img id="logo" width="60%" src="web/images/gintegrator-logo.svg" alt="Gintegrator logo">
 </p>
-<style>
-    /* Default (light theme) */
-    #logo {
-        filter: invert(0%);
-    }
 
-    /* Dark theme */
-    @media (prefers-color-scheme: dark) {
-        #logo {
-            filter: invert(100%);
+<script>
+    // Function to apply the appropriate filter based on the theme
+    function applyTheme() {
+        const logo = document.getElementById('logo');
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            // Dark theme
+            logo.style.filter = 'invert(100%)';
+        } else {
+            // Light theme
+            logo.style.filter = 'invert(0%)';
         }
     }
-</style>
+
+    // Apply the theme on page load
+    applyTheme();
+
+    // Listen for changes in the theme preference
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+</script>
 
 <hr>
 
