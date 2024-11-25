@@ -1,4 +1,19 @@
-<p align="center"><img width="60%" src="web/images/gintegrator-logo.svg" alt="Gintegrator logo"></p>
+<p align="center">
+    <img id="logo" width="60%" src="web/images/gintegrator-logo.svg" alt="Gintegrator logo">
+</p>
+<style>
+    /* Default (light theme) */
+    #logo {
+        filter: invert(0%);
+    }
+
+    /* Dark theme */
+    @media (prefers-color-scheme: dark) {
+        #logo {
+            filter: invert(100%);
+        }
+    }
+</style>
 
 <hr>
 
@@ -14,7 +29,7 @@ Visit the online <a href="https://gin.us.es">Gintegrator app</a> deployment.
 
 #### Local
 
-1. Install ginmappeR R package from Bioconductor and plumber from CRAN in your R environment:
+1. <b>Install ginmappeR R package</b> from Bioconductor and plumber from CRAN in your R environment:
 
 ```
 if (!require("BiocManager", quietly = TRUE))
@@ -29,27 +44,39 @@ BiocManager::install("ginmappeR")
 ```
 install('plumber')
 ```
+<br>
 
-2. Launch ginmappeR API with plumber (you can configure the port on which it will run):
+1. 2 (Optional) <b>Set a NCBI API key</b> to get better requests limits with rentrez package. Simply <a href="https://www.ncbi.nlm.nih.gov/account/">register at NCBI</a> and retrieve your API key in your <a href="https://www.ncbi.nlm.nih.gov/account/settings/">account settings page</a>. Finally, register your API key in rentrez package so it can make use of it:
 
 ```
-plumb(file='inst/plumber/ginmappeR-API-server/plumber.R')$run(port=1234, swagger=FALSE)
+set_entrez_key("your_api_key")
 ```
+<br>
 
-3. Download Gintegrator project and configure `/web/js/api/common.js` with the selected port (by default it is ``1234``):
+
+2. <b>Launch ginmappeR API</b> with plumber (you can configure the port on which it will run):
+
+```
+plumber::plumb_api("ginmappeR", "ginmappeR-API-server")$run(port=1234)
+```
+<br>
+
+3. <b>Download Gintegrator</b> project and configure `/web/js/api/common.js` with the selected port (by default it is ``1234``):
 
 ```
 const BASE_URL = "http://localhost:1234";
 ```
+<br>
 
-4. Serve Gintegrator with your preferred web server (e.g. NGINX) or deploy it with python <a href="https://github.com/DEAL-US/Silence">Silence</a> framework:
+4. <b>Serve Gintegrator</b> with your preferred web server (e.g. NGINX) or deploy it with python <a href="https://github.com/DEAL-US/Silence">Silence</a> framework:
 
 ```
 ### In the Gintegrator folder
 $ silence run
 ```
+<br>
 
-5. Access the web app at ``localhost:8080`` (default port in Silence, can be configured in file ``settings.py``) or at the defined port by your web server.
+5. <b>Access the web app</b> at ``localhost:8080`` (default port in Silence, can be configured in file ``settings.py``) or at the defined port by your web server.
 
 ### License 
 
