@@ -75,6 +75,36 @@ async function loadMapper() {
             this.setCustomValidity('');
         });
 
+        // Add an event listener to the "from" database select element to clear the custom validation message
+        document.getElementById('fromDbSelect').addEventListener('change', function () {
+            // Clear the custom validation message
+            this.setCustomValidity('');
+        });
+
+        // Check if the selected "to" database is the default value
+        if (toDb === 'default') {
+            // Set a custom validation message
+            document.getElementById('toDbSelect').setCustomValidity('You have to select a database.');
+
+            // Trigger form validation
+            document.getElementById('mapper-form').reportValidity();
+
+            // Exit the function
+            return;
+        }
+
+        // Check if the selected "from" database is the default value
+        if (fromDb === 'default') {
+            // Set a custom validation message
+            document.getElementById('fromDbSelect').setCustomValidity('You have to select a database.');
+
+            // Trigger form validation
+            document.getElementById('mapper-form').reportValidity();
+
+            // Exit the function
+            return;
+        }
+
         // Check if the selected "from" and "to" databases are the same
         if (fromDb == toDb) {
             // Set a custom validation message
@@ -109,9 +139,14 @@ async function loadMapper() {
         resultsContainer.innerHTML = commonRenderer.loadingSpinner();
 
         // Loop over the identifiers
-        for (let id of ids) {
+        for (let i = 0; i < ids.length; i++) {
+            let id = ids[i];
+
+            // Show the loading GIF
+            document.getElementById('loading-spinner').innerHTML = commonRenderer.loadingSpinner(i, ids.length, id);
+
             // Convert the request data to a string to use as a key
-            let key = JSON.stringify({id, fromDb, toDb, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins});
+            let key = JSON.stringify({ id, fromDb, toDb, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins });
 
             // Try to get the result from localStorage
             let result = localStorage.getItem(key);
@@ -125,22 +160,22 @@ async function loadMapper() {
                     // Call the corresponding API function based on the selected "from" and "to" databases
                     switch (fromDb) {
                         case 'card':
-                            result = await cardAPI[`getCARD2${toDbFunctionName}`](id, exhaustiveMapping=exhaustiveMapping, detailedMapping=detailedMapping, similarGenes=similarGenes, identicalProteins=identicalProteins);
+                            result = await cardAPI[`getCARD2${toDbFunctionName}`](id, exhaustiveMapping = exhaustiveMapping, detailedMapping = detailedMapping, similarGenes = similarGenes, identicalProteins = identicalProteins);
                             break;
                         case 'uniprot':
-                            result = await uniprotAPI[`getUniProt2${toDbFunctionName}`](id, exhaustiveMapping=exhaustiveMapping, detailedMapping=detailedMapping, similarGenes=similarGenes, identicalProteins=identicalProteins);
+                            result = await uniprotAPI[`getUniProt2${toDbFunctionName}`](id, exhaustiveMapping = exhaustiveMapping, detailedMapping = detailedMapping, similarGenes = similarGenes, identicalProteins = identicalProteins);
                             break;
                         case 'kegg':
-                            result = await keggAPI[`getKEGG2${toDbFunctionName}`](id, exhaustiveMapping=exhaustiveMapping, detailedMapping=detailedMapping, similarGenes=similarGenes, identicalProteins=identicalProteins);
+                            result = await keggAPI[`getKEGG2${toDbFunctionName}`](id, exhaustiveMapping = exhaustiveMapping, detailedMapping = detailedMapping, similarGenes = similarGenes, identicalProteins = identicalProteins);
                             break;
                         case 'ncbiProtein':
-                            result = await ncbiAPI[`getNCBIProtein2${toDbFunctionName}`](id, exhaustiveMapping=exhaustiveMapping, detailedMapping=detailedMapping, similarGenes=similarGenes, identicalProteins=identicalProteins);
+                            result = await ncbiAPI[`getNCBIProtein2${toDbFunctionName}`](id, exhaustiveMapping = exhaustiveMapping, detailedMapping = detailedMapping, similarGenes = similarGenes, identicalProteins = identicalProteins);
                             break;
                         case 'ncbiGene':
-                            result = await ncbiAPI[`getNCBIGene2${toDbFunctionName}`](id, exhaustiveMapping=exhaustiveMapping, detailedMapping=detailedMapping, similarGenes=similarGenes, identicalProteins=identicalProteins);
+                            result = await ncbiAPI[`getNCBIGene2${toDbFunctionName}`](id, exhaustiveMapping = exhaustiveMapping, detailedMapping = detailedMapping, similarGenes = similarGenes, identicalProteins = identicalProteins);
                             break;
                         case 'ncbiNucleotide':
-                            result = await ncbiAPI[`getNCBINucleotide2${toDbFunctionName}`](id, exhaustiveMapping=exhaustiveMapping, detailedMapping=detailedMapping, similarGenes=similarGenes, identicalProteins=identicalProteins);
+                            result = await ncbiAPI[`getNCBINucleotide2${toDbFunctionName}`](id, exhaustiveMapping = exhaustiveMapping, detailedMapping = detailedMapping, similarGenes = similarGenes, identicalProteins = identicalProteins);
                             break;
                     }
                 } catch (e) {
@@ -186,9 +221,9 @@ async function loadMapper() {
 
                     // Append the result to the results container
                     resultsContainer.innerHTML += mapperRenderer.asIDs(result, id, fromDb, toDb);
-                    
+
                     // Add the result to the history if it is not already there
-                    if(!localStorage.getItem(key)){
+                    if (!localStorage.getItem(key)) {
                         commonFunctions.addToHistory(mapperRenderer.asIDs(result, id, fromDb, toDb), key);
                     };
 
@@ -198,7 +233,10 @@ async function loadMapper() {
             }
         }
         // Remove the loading spinner
-        resultsContainer.innerHTML = resultsContainer.innerHTML.replace(commonRenderer.loadingSpinner(), '');
+        var spinnerElement = document.getElementById('loading-spinner');
+        if (spinnerElement) {
+            spinnerElement.remove();
+        }
     });
 }
 

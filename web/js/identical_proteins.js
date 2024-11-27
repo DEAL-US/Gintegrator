@@ -57,8 +57,15 @@ async function loadIdenticalProteins() {
 
         // Show the loading spinner
         identicalProteinsDiv.innerHTML = commonRenderer.loadingSpinner();
+
         // Loop over the identifiers
-        for (let id of ids) {
+        for (let i = 0; i < ids.length; i++) {
+            let id = ids[i];
+
+            // Update the loading spinner with progress
+            document.getElementById('loading-spinner').innerHTML = commonRenderer.loadingSpinner(i, ids.length, id);
+
+
             // Create an object from the variables
             let requestData = { id, format };
 
@@ -124,6 +131,9 @@ async function loadIdenticalProteins() {
             }
         }
         // Remove the loading spinner
-        identicalProteinsDiv.innerHTML = identicalProteinsDiv.innerHTML.replace(commonRenderer.loadingSpinner(), '');
+        var spinnerElement = document.getElementById('loading-spinner');
+        if (spinnerElement) {
+            spinnerElement.remove();
+        }
     });
 }

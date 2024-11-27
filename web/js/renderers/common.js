@@ -1,7 +1,7 @@
 "use strict";
 
 const commonRenderer = {
-    
+
     errorMessageSameDB: function () {
         return `
         <div class="container">
@@ -42,7 +42,7 @@ const commonRenderer = {
         <br>`;
     },
 
-    noResultsFound: function(id) {
+    noResultsFound: function (id) {
         return `
         <div class="row justify-content-center">
             <div class="col-12 col-md-12 col-lg-9 col-xl-7 mx-auto">
@@ -69,15 +69,23 @@ const commonRenderer = {
         <br>`;
     },
 
-    loadingSpinner: function () {
+    loadingSpinner: function (processed, total, currentId) {
         return `
-            <div class="d-flex justify-content-center">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
+            <div id="loading-spinner">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
                 </div>
-            </div>
-            <div class="d-flex justify-content-center">
-                <span style="font-size: 0.8em; color: #888;">Querying public databases, please wait...</span>
+                <div class="d-flex justify-content-center">
+                    <span style="font-size: 0.8em; color: #888;">Querying public databases, please wait...</span>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <span style="font-size: 0.8em; color: #888;">Working on identifier ${currentId}</span>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <span style="font-size: 0.8em; color: #888;">${processed}/${total} identifiers processed</span>
+                </div>
             </div>
             <br>
         `;

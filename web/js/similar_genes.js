@@ -69,7 +69,12 @@ async function loadSimilarGenes() {
         similarGenesDiv.innerHTML = commonRenderer.loadingSpinner();
 
         // Loop over the identifiers
-        for (let id of ids) {
+        for (let i = 0; i < ids.length; i++) {
+            let id = ids[i];
+
+            // Update the loading spinner with progress
+            document.getElementById('loading-spinner').innerHTML = commonRenderer.loadingSpinner(i, ids.length, id);
+
             // Create an object from the variables
             let requestData = { id, clusterNames, clusterIdentity };
 
@@ -121,6 +126,9 @@ async function loadSimilarGenes() {
             }
         }
         // Remove the loading spinner
-        similarGenesDiv.innerHTML = similarGenesDiv.innerHTML.replace(commonRenderer.loadingSpinner(), '');
+        var spinnerElement = document.getElementById('loading-spinner');
+        if (spinnerElement) {
+            spinnerElement.remove();
+        }
     });
 }

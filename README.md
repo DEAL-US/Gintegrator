@@ -53,7 +53,7 @@ const BASE_URL = "http://localhost:1234";
 ```
 <br>
 
-4. <b>Serve Gintegrator</b> with your preferred web server (e.g. NGINX) or deploy it with python <a href="https://github.com/DEAL-US/Silence">Silence</a> framework:
+4. <b>Serve Gintegrator</b> with your preferred web server (e.g. NGINX) or deploy it with <a href="https://github.com/DEAL-US/Silence">Silence</a> framework:
 
 ```
 ### In the Gintegrator folder
