@@ -140,7 +140,7 @@ const commonFunctions = {
                     if (input.value == '') {
                         input.value += text;
                     } else {
-                        input.value += '; ' + text;
+                        input.value += ', ' + text;
                     }
                 }
             });
@@ -149,12 +149,12 @@ const commonFunctions = {
 
     enableMapperClickingExamples: function () {
 
-        let examplesCARD = `Enter CARD ID:<br><h5 class="example-text"> (examples: <span class="clipb-span">ARO:3002535</span>; <span class="clipb-span">ARO:3000938</span>)</h5>`;
-        let examplesNCBIProtein = `Enter NCBI Protein ID:<br><h5 class="example-text"> (examples: <span class="clipb-span">CAA79696</span>; <span class="clipb-span">WP_010896559.1</span>)</h5>`;
-        let examplesNCBIGene = `Enter NCBI Gene ID:<br><h5 class="example-text"> (examples: <span class="clipb-span">76524190</span>; <span class="clipb-span">1272</span>)</h5>`;
-        let examplesNCBINucleotide = `Enter NCBI Nucleotide ID:<br><h5 class="example-text"> (examples: <span class="clipb-span">AY536519</span>; <span class="clipb-span">JQ394987</span>; <span class="clipb-span">Z21488</span>)</h5>`;
-        let examplesUniProt = `Enter UniProt ID:<br><h5 class="example-text"> (examples: <span class="clipb-span">G0L217</span>; <span class="clipb-span">G9JVE6</span>; <span class="clipb-span">Q6R7P5</span>)</h5>`;
-        let examplesKEGG = `Enter KEGG ID:<br><h5 class="example-text"> (examples: <span class="clipb-span">ag:ACC85616</span>; <span class="clipb-span">aag:5579347</span>; <span class="clipb-span">llo:LLO_2673</span>)</h5>`;
+        let examplesCARD = `Enter CARD ID:<br><h5 class="example-text"> (examples: <span class="clipb-span">ARO:3002535</span>, <span class="clipb-span">ARO:3000938</span>)</h5>`;
+        let examplesNCBIProtein = `Enter NCBI Protein ID:<br><h5 class="example-text"> (examples: <span class="clipb-span">CAA79696</span>, <span class="clipb-span">WP_010896559.1</span>)</h5>`;
+        let examplesNCBIGene = `Enter NCBI Gene ID:<br><h5 class="example-text"> (examples: <span class="clipb-span">76524190</span>, <span class="clipb-span">1272</span>)</h5>`;
+        let examplesNCBINucleotide = `Enter NCBI Nucleotide ID:<br><h5 class="example-text"> (examples: <span class="clipb-span">AY536519</span>, <span class="clipb-span">JQ394987</span>, <span class="clipb-span">Z21488</span>)</h5>`;
+        let examplesUniProt = `Enter UniProt ID:<br><h5 class="example-text"> (examples: <span class="clipb-span">G0L217</span>, <span class="clipb-span">G9JVE6</span>, <span class="clipb-span">Q6R7P5</span>)</h5>`;
+        let examplesKEGG = `Enter KEGG ID:<br><h5 class="example-text"> (examples: <span class="clipb-span">ag:ACC85616</span>, <span class="clipb-span">aag:5579347</span>, <span class="clipb-span">llo:LLO_2673</span>)</h5>`;
 
         // Modify form idInput label content depending on From database selected in the form
         // Get the fromDbSelect and idInput elements
@@ -209,7 +209,7 @@ const commonFunctions = {
                         if (input.value == '') {
                             input.value += text;
                         } else {
-                            input.value += '; ' + text;
+                            input.value += ', ' + text;
                         }
                     }
                 });
@@ -354,6 +354,24 @@ const commonFunctions = {
         }
         if (resultHTML === '') { resultHTML = '<div style="opacity: 0.5">No results yet.</div>'; }
         historyAccordionBody.innerHTML = resultHTML;
+    },
+    
+    parseCSV: async function (file) {
+
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const text = event.target.result;
+                // Split the text by newline characters and commas, then trim and filter out empty lines
+                const ids = text.split(/[\n,]/).map(line => line.trim()).filter(line => line.length > 0);
+                resolve(ids);
+            };
+            reader.onerror = function (event) {
+                reject(new Error("Error reading CSV file"));
+                resultsContainer.innerHTML += commonRenderer.errorMessageCSV();
+            };
+            reader.readAsText(file);
+        });
     },
 };
 

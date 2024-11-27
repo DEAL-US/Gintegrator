@@ -5,7 +5,7 @@ const identicalProteinRenderer = {
     ipExplanations: function () {
         return `
         <p class="lead" style="font-size: 1.1em;">
-            Provide a valid NCBI identifier or a list of them separated by ; to retrieve identical proteins identifiers as a list of them or as a more detailed table (dataframe).
+            Provide a valid NCBI identifier, a list of them separated by commas or a CSV file to retrieve identical proteins identifiers.
         </p>    
         `;
     },
@@ -27,16 +27,32 @@ const identicalProteinRenderer = {
                         <div class="container">
                             <form id="identical-proteins-form">
                                 <div class="row">
-                                    <div class="col-md-9">
+                                    <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="idInput">Enter NCBI ID:<br><h5 class="example-text"> (examples: ${examples})</h5></label>
-                                            <input type="text" id="idInput" name="idInput" class="form-control" required placeholder="identifier1; identifier2; identifier3...">
+                                            <input type="text" id="idInput" name="idInput" class="form-control" required placeholder="identifier1, identifier2, identifier3...">
                                         </div>
                                     </div>
-                                    <div class="col-md-3 align-self-end mt-xs-3">
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div>
+                                                <label for="csvInput" class="form-label">Or upload a CSV file with identifiers:</label>
+                                                <img src="images/info-circle.svg" data-bs-toggle="tooltip" data-bs-placement="right" 
+                                                title="The file can contain identifiers separated by commas or one identifier per line" class="info-icon">
+                                                <input type="file" class="form-control" id="csvInput" accept=".csv">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-12">
                                         <div class="form-group ">
                                             <label for="formatSelect">Format:</label>
-                                            <select id="formatSelect" name="formatSelect" class="form-control" required>
+                                            <img src="images/info-circle.svg" data-bs-toggle="tooltip" data-bs-placement="right" 
+                                                title="Format of the retrieved results: a list of identifiers or a more detailed table (dataframe)" class="info-icon">
+                                            <select id="formatSelect" name="formatSelect" class="form-select mt-1" required>
                                                 <option value="ids">Identifiers</option>
                                                 <option value="dataframe">Dataframe</option>
                                             </select>

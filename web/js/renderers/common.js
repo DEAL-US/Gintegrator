@@ -42,6 +42,35 @@ const commonRenderer = {
         <br>`;
     },
 
+    errorMessageCSV: function (id) {
+
+        return `
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-12 col-lg-9 col-xl-7 mx-auto">
+                <div class="card mt-2 mx-auto bg-light">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-12 text-center pt-2">
+                                <h5>${id}</h5>
+                            </div>                                
+                        </div>
+                    </div>
+
+                    <div class="card-body bg-light">
+                        <div class="container">
+                            <div class="row justify-content-center mt-3">
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger" role="alert">An error ocurred processing the CSV file, please revise it and try again.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>`;
+    },
+
     noResultsFound: function (id) {
         return `
         <div class="row justify-content-center">

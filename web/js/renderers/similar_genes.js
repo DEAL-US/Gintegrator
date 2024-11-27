@@ -25,7 +25,7 @@ const similarGenesRenderer = {
 
         return `
         <p class="lead" style="font-size: 1.1em;">
-            Input a valid UniProt identifier to fetch gene clusters or groups that are identical on the specified percentage. Names of the clusters can be retrieved as well.
+            Input a valid UniProt identifier, a list of them separated by commas or a CSV file with them in order to fetch gene clusters or groups that are identical on the specified percentage. Names of the clusters can be retrieved as well.
         </p>    
         `;
     },
@@ -50,10 +50,23 @@ const similarGenesRenderer = {
                                     <div class="col-md-12">
                                         <div class="form-group">
                                         <label for="idInput">Enter UniProt ID:<br><h5 class="example-text"> (examples: ${examples})</h5></label>                                            
-                                        <input type="text" id="idInput" name="idInput" class="form-control" placeholder="identifier1; identifier2; identifier3..." required>
+                                        <input type="text" id="idInput" name="idInput" class="form-control" placeholder="identifier1, identifier2, identifier3..." required>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="mb-3">
+                                                <label for="csvInput" class="form-label">Or upload a CSV file with identifiers:</label>
+                                                <img src="images/info-circle.svg" data-bs-toggle="tooltip" data-bs-placement="right" 
+                                                title="The file can contain identifiers separated by commas or one identifier per line" class="info-icon">
+                                                <input type="file" class="form-control" id="csvInput" accept=".csv">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <label class="mt-3">Cluster Identity:</label>
                                 <img src="images/info-circle.svg" data-bs-toggle="tooltip" data-bs-placement="right" 
                                 title="% of identity of the cluster to be retrieved" class="info-icon">

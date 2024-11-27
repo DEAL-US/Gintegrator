@@ -57,13 +57,26 @@ async function loadMapper() {
     // Render previous results from localStorage
     commonFunctions.renderPreviousResults('mapper');
 
+    // Add an event listener to the CSV input to enable/disable the text input
+    document.getElementById('csvInput').addEventListener('change', function () {
+        let csvFile = document.getElementById('csvInput').files[0];
+        let idInput = document.getElementById('idInput');
+        if (csvFile) {
+            idInput.disabled = true;
+            idInput.removeAttribute('required');
+        } else {
+            idInput.disabled = false;
+            idInput.setAttribute('required', 'required');
+        }
+    });
+
     // Add an event listener to the form
     form.addEventListener('submit', async function (event) {
         // Prevent the form from submitting normally
         event.preventDefault();
 
         // Get the ID from the form input
-        let ids = document.getElementById('idInput').value.split(';').map(id => id.trim());
+        let ids = document.getElementById('idInput').value.split(',').map(id => id.trim());
 
         // Get the selected "from" and "to" databases from the select inputs
         let fromDb = document.getElementById('fromDbSelect').value;
@@ -115,6 +128,12 @@ async function loadMapper() {
 
             // Exit the function
             return;
+        }
+
+        // Check if a CSV file is uploaded
+        let csvFile = document.getElementById('csvInput').files[0];
+        if (csvFile) {
+            ids = await commonFunctions.parseCSV(csvFile);
         }
 
         // Mapping between the select input values and the function names
