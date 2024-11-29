@@ -312,6 +312,7 @@ const commonFunctions = {
 
         let resultHTML = '';
         let historyAccordionBody = document.getElementById('historyAccordionBody');
+        let allResults = new Map();
 
         // Loop over the keys
         for (let key of keys) {
@@ -324,6 +325,7 @@ const commonFunctions = {
                 if (requestData.hasOwnProperty('fromDb') && requestData.hasOwnProperty('toDb')) {
                     // Get the result from localStorage
                     let result = JSON.parse(localStorage.getItem(key));
+                    allResults.set(requestData, result);
 
                     // Append the result to the results container
                     resultHTML += this.addHistoryParameters(mapperRenderer.asIDs(result, requestData.id, requestData.fromDb, requestData.toDb), requestData);
@@ -333,6 +335,7 @@ const commonFunctions = {
                 if (requestData.hasOwnProperty('id') && requestData.hasOwnProperty('format')) {
                     // Get the result from localStorage
                     let result = JSON.parse(localStorage.getItem(key));
+                    allResults.set(requestData, result);
 
                     // Append the result to the results container depending on the format
                     if (requestData.format === 'ids') {
@@ -346,16 +349,86 @@ const commonFunctions = {
                 if (requestData.hasOwnProperty('id') && requestData.hasOwnProperty('clusterNames') && requestData.hasOwnProperty('clusterIdentity')) {
                     // Get the result from localStorage
                     let result = JSON.parse(localStorage.getItem(key));
+                    allResults.set(requestData, result[0]);
 
                     // Append the result to the results container
                     resultHTML += similarGenesRenderer.asIDs(result, requestData.clusterNames, requestData.id, requestData.clusterIdentity);
                 }
             }
         }
-        if (resultHTML === '') { resultHTML = '<div style="opacity: 0.5">No results yet.</div>'; }
+        if (resultHTML === '') {
+            resultHTML = '<div style="opacity: 0.5">No results yet.</div>';
+        } else {
+            // Add the "Download as single JSON" button
+            resultHTML = `
+                <div class="text-end">
+                    <button id="downloadJsonBtnHistory" class="btn btn-secondary mb-3">Download all previous results</button>
+                </div>
+                ${resultHTML}
+            `;
+        }
+
         historyAccordionBody.innerHTML = resultHTML;
+
+        if (historyType === 'iproteins') {
+
+            // Add event listener to the download button
+            let downloadJsonBtnHistory = document.getElementById('downloadJsonBtnHistory');
+            if (downloadJsonBtnHistory) {
+                downloadJsonBtnHistory.addEventListener('click', function () {
+                    let zip = new JSZip();
+
+                    for (let [key, value] of allResults.entries()) {
+                        if (key.format === 'ids') {
+                            zip.file(`${key.id}_identical_proteins_ids.json`, JSON.stringify(value[0], null, 2));
+                        } else { // format === 'dataframe'
+                            let result = value;
+
+                            // Convert the result (dataframe) to CSV
+                            let csv = '';
+                            let keys = Object.keys(result[0]);
+                            csv += keys.join(',') + '\n';
+                            for (let i = 0; i < result.length; i++) {
+                                let values = keys.map(key => result[i][key]);
+                                csv += values.join(',') + '\n';
+                            }
+                            zip.file(`${key.id}_identical_proteins_dataframe.csv`, csv);
+                        }
+                    }
+                    zip.generateAsync({ type: 'blob' }).then(function (content) {
+                        let url = URL.createObjectURL(content);
+                        let a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'previous_results.zip';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    });
+                });
+            }
+
+        } else {
+            // Add event listener to the download button
+            let downloadJsonBtnHistory = document.getElementById('downloadJsonBtnHistory');
+            if (downloadJsonBtnHistory) {
+                downloadJsonBtnHistory.addEventListener('click', function () {
+                    // Convert the Map to an array of key-value pairs
+                    let allResultsArray = Array.from(allResults.entries());
+                    // Create a JSON blob from the array
+                    let jsonBlob = new Blob([JSON.stringify(allResultsArray, null, 2)], { type: 'application/json' });
+                    let url = URL.createObjectURL(jsonBlob);
+                    let a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'previous_results.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                });
+            }
+        }
+
     },
-    
+
     parseCSV: async function (file) {
 
         return new Promise((resolve, reject) => {

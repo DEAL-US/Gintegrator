@@ -77,13 +77,17 @@ async function loadIdenticalProteins() {
         // Show the loading spinner
         identicalProteinsDiv.innerHTML = commonRenderer.loadingSpinner();
 
+        // Add the download JSON button
+        identicalProteinsDiv.innerHTML += commonRenderer.downloadJSONButton();
+
+        let allResults = new Map();
+
         // Loop over the identifiers
         for (let i = 0; i < ids.length; i++) {
             let id = ids[i];
 
             // Update the loading spinner with progress
             document.getElementById('loading-spinner').innerHTML = commonRenderer.loadingSpinner(i, ids.length, id);
-
 
             // Create an object from the variables
             let requestData = { id, format };
@@ -128,6 +132,10 @@ async function loadIdenticalProteins() {
 
                         // Store the result in localStorage
                         localStorage.setItem(key, JSON.stringify(result));
+
+                        // Store the result in allResults
+                        allResults.set(requestData, result[0]);
+
                     }
                 } else { // format === 'dataframe'
                     if (Object.keys(result).length === 0) {
@@ -145,9 +153,62 @@ async function loadIdenticalProteins() {
                         // Store the result in localStorage
                         localStorage.setItem(key, JSON.stringify(result));
 
+                        // Convert the result (dataframe) to CSV
+                        let csv = '';
+                        let keys = Object.keys(result[0]);
+                        csv += keys.join(',') + '\n';
+                        for (let i = 0; i < result.length; i++) {
+                            let values = keys.map(key => result[i][key]);
+                            csv += values.join(',') + '\n';
+                        }
+
+                        // Store the result in allResults
+                        allResults.set(requestData, csv);
+
                     }
                 }
             }
+
+            // Enable download JSON button if allResults is not empty
+            if (allResults.size > 0) {
+                // Enable the download JSON button
+                document.getElementById('downloadJsonBtn').disabled = false;
+            }
+
+            // Add event listener to the download button
+            let downloadJsonBtn = document.getElementById('downloadJsonBtn');
+            if (downloadJsonBtn) {
+                downloadJsonBtn.addEventListener('click', function () {
+                    if (format === 'dataframe') {
+                        // Create a zip file with CSV files for each key in allResults
+                        let zip = new JSZip();
+                        for (let [key, value] of allResults.entries()) {
+                            zip.file(`${key.id}_identical_proteins_dataframe.csv`, value);
+                        }
+                        zip.generateAsync({ type: 'blob' }).then(function (content) {
+                            let url = URL.createObjectURL(content);
+                            let a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'identical_proteins_results.zip';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                        });
+                    } else {
+                        // Convert the Map to an array of key-value pairs
+                        let allResultsArray = Array.from(allResults.entries());
+                        // Create a JSON blob from the array
+                        let jsonBlob = new Blob([JSON.stringify(allResultsArray, null, 2)], { type: 'application/json' }); let url = URL.createObjectURL(jsonBlob);
+                        let a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'identical_proteins_results.json';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    }
+                });
+            }
+
         }
         // Remove the loading spinner
         var spinnerElement = document.getElementById('loading-spinner');

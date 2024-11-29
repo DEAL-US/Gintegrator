@@ -118,6 +118,16 @@ const commonRenderer = {
             </div>
             <br>
         `;
+    },
+
+    downloadJSONButton: function () {
+        return `
+            <div>
+                <div class="d-flex justify-content-center">
+                    <button id="downloadJsonBtn" class="btn btn-secondary mb-3" disabled>Download all results</button>
+                </div>
+            </div>
+        `;
     }
 };
 

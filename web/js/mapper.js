@@ -157,6 +157,11 @@ async function loadMapper() {
         // Show the loading GIF
         resultsContainer.innerHTML = commonRenderer.loadingSpinner();
 
+        // Add the download JSON button
+        resultsContainer.innerHTML += commonRenderer.downloadJSONButton();
+
+        let allResults = new Map();
+
         // Loop over the identifiers
         for (let i = 0; i < ids.length; i++) {
             let id = ids[i];
@@ -248,8 +253,36 @@ async function loadMapper() {
 
                     // Store the result in localStorage
                     localStorage.setItem(key, JSON.stringify(result));
+
+                    // Store the result in allResults
+                    allResults.set({ id, fromDb, toDb, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins }, result);
                 }
             }
+
+            // Enable download JSON button if allResults is not empty
+            if (allResults.size > 0) {
+                // Enable the download JSON button
+                document.getElementById('downloadJsonBtn').disabled = false;
+            }
+
+            // Add event listener to the download button
+            let downloadJsonBtn = document.getElementById('downloadJsonBtn');
+            if (downloadJsonBtn) {
+                downloadJsonBtn.addEventListener('click', function () {
+                    // Convert the Map to an array of key-value pairs
+                    let allResultsArray = Array.from(allResults.entries());
+                    // Create a JSON blob from the array
+                    let jsonBlob = new Blob([JSON.stringify(allResultsArray, null, 2)], { type: 'application/json' });
+                    let url = URL.createObjectURL(jsonBlob);
+                    let a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'mapping_results.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                });
+            }
+
         }
         // Remove the loading spinner
         var spinnerElement = document.getElementById('loading-spinner');
