@@ -41,6 +41,12 @@ async function loadSimilarGenes() {
     // Append the form to the form container
     similarGenesFormContainer.innerHTML = similarGenesRenderer.sgForm();
 
+    // Append the compact view switch to the form container
+    document.getElementById('cvSwitchDiv').innerHTML = commonRenderer.compactViewSwitch();
+
+    // Add event listeners to the compact view buttons
+    commonFunctions.addViewModeEventListeners();
+
     // Get the form element
     let form = document.getElementById('similar-genes-form');
 
@@ -89,6 +95,8 @@ async function loadSimilarGenes() {
 
         // Add the download JSON button
         similarGenesDiv.innerHTML += commonRenderer.downloadJSONButton();
+
+        similarGenesDiv.innerHTML += commonRenderer.horizontalDivider();
 
         let allResults = new Map();
 
@@ -166,7 +174,7 @@ async function loadSimilarGenes() {
                     // Convert the Map to an array of key-value pairs
                     let allResultsArray = Array.from(allResults.entries());
                     // Create a JSON blob from the array
-                    let jsonBlob = new Blob([JSON.stringify(allResultsArray, null, 2)], { type: 'application/json' }); 
+                    let jsonBlob = new Blob([JSON.stringify(allResultsArray, null, 2)], { type: 'application/json' });
                     let url = URL.createObjectURL(jsonBlob);
                     let a = document.createElement('a');
                     a.href = url;

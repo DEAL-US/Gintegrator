@@ -46,6 +46,12 @@ async function loadMapper() {
     // Append the form to the employees container
     formContainer.innerHTML = mapperRenderer.mapperForm();
 
+    // Append the compact view switch to the form container
+    document.getElementById('cvSwitchDiv').innerHTML = commonRenderer.compactViewSwitch();
+
+    // Add event listeners to the compact view buttons
+    commonFunctions.addViewModeEventListeners();
+
     // Get the form element
     let form = document.getElementById('mapper-form');
 
@@ -153,12 +159,13 @@ async function loadMapper() {
         let similarGenes = document.getElementById('similarGenes').checked.toString().toUpperCase();
         let identicalProteins = document.getElementById('identicalProteins').checked.toString().toUpperCase();
 
-
         // Show the loading GIF
         resultsContainer.innerHTML = commonRenderer.loadingSpinner();
 
         // Add the download JSON button
         resultsContainer.innerHTML += commonRenderer.downloadJSONButton();
+
+        resultsContainer.innerHTML += commonRenderer.horizontalDivider();
 
         let allResults = new Map();
 

@@ -128,7 +128,22 @@ const commonRenderer = {
                 </div>
             </div>
         `;
-    }
+    },
+
+    compactViewSwitch: function () {
+        return `
+            <div class="d-flex justify-content-center mt-1">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="viewModeSwitch">
+                    <label class="form-check-label" for="viewModeSwitch">Compact view</label>
+                </div>
+            </div>`;
+    },
+
+    horizontalDivider: function () {
+        return `
+        <hr class="hr hr-blurry" style="border: none; height: 3px; background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.5), transparent);">        `;
+    },
 };
 
 export { commonRenderer };

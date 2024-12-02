@@ -124,6 +124,7 @@ const mapperRenderer = {
                             </form>
                         </div>
                     </div>
+                        <div id="cvSwitchDiv"></div>
                 </div>
             </div>
         </div>
@@ -135,18 +136,29 @@ const mapperRenderer = {
     asIDs: function (result, id, fromDb, toDb) {
         // Create a Blob object from the result
         let blob = new Blob([JSON.stringify(result)], { type: 'application/json' });
-
+    
         // Create a URL for the Blob object
         let url = URL.createObjectURL(blob);
-
+    
         // Create a dictionary of the url for the toDb
-        let urlDict = {'card': '', 
-        'ncbiProtein': 'https://www.ncbi.nlm.nih.gov/protein/', 
-        'ncbiGene': 'https://www.ncbi.nlm.nih.gov/gene/', 
-        'ncbiNucleotide': 'https://www.ncbi.nlm.nih.gov/nuccore/', 
-        'uniprot': 'https://www.uniprot.org/uniprotkb/', 
-        'kegg': 'https://www.genome.jp/entry/'}
+        let urlDict = {
+            'card': '',
+            'ncbiProtein': 'https://www.ncbi.nlm.nih.gov/protein/',
+            'ncbiGene': 'https://www.ncbi.nlm.nih.gov/gene/',
+            'ncbiNucleotide': 'https://www.ncbi.nlm.nih.gov/nuccore/',
+            'uniprot': 'https://www.uniprot.org/uniprotkb/',
+            'kegg': 'https://www.genome.jp/entry/'
+        };
 
+        let dbDict = {
+            'card': 'CARD',
+            'ncbiProtein': 'NCBI Protein',
+            'ncbiGene': 'NCBI Gene',
+            'ncbiNucleotide': 'NCBI Nucleotide',
+            'uniprot': 'UniProt',
+            'kegg': 'KEGG'
+        };
+    
         let listHTML = `
         <div class="row justify-content-center">
             <div class="col-12 col-md-12 col-lg-9 col-xl-7 mx-auto">
@@ -154,13 +166,18 @@ const mapperRenderer = {
                     <div class="card-header py-3">
                         <div class="row">
                             <div class="col-md-7 pt-2">
-                                <div class="translation-diagram">
+                                <div class="translation-diagram detailed-view">
                                     <img src="/images/${fromDb}_logo.png" alt="${fromDb} logo" class="translation-logo">
                                     <div class="translation-center">
                                         <span class="translation-id">${id}</span>
                                         <span class="translation-arrow"></span>
                                     </div>
                                     <img src="/images/${toDb}_logo.png" alt="${toDb} logo" class="translation-logo">
+                                </div>
+                                <div class="translation-diagram compact-view" style="display: none;">
+                                    <span class="translation-id">${id}</span>
+                                    <span class="translation-arrow mb-3"></span>
+                                    <span class="translation-id">${dbDict[toDb]}</span>
                                 </div>
                             </div>
                             <div class="col-md-5 text-end my-auto">
@@ -176,14 +193,13 @@ const mapperRenderer = {
                     </div>
                     <div class="card-body bg-light">
                         <div class="container">
-                            
         `;
-        
+    
         // Function to map identifiers to HTML list items
         function mapIdentifiers(identifiers, toDb, urlDict) {
             if (toDb === 'card') {
                 return identifiers.map(idx => `<li class="list-group-item">${idx.trim()}</li>`).join('');
-            }else{
+            } else {
                 return identifiers.map(idx => `
                 <li class="list-group-item">${idx.trim()} 
                     <a href="${urlDict[toDb]}${idx.trim()}" target="_blank" style="font-size: 0.6em">
@@ -192,7 +208,7 @@ const mapperRenderer = {
                 </li>`).join('');
             }
         }
-
+    
         if (Array.isArray(result)) {
             if (typeof result[0] === 'string') {
                 // If result is an array of identifiers

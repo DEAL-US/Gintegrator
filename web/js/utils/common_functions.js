@@ -284,8 +284,6 @@ const commonFunctions = {
         return ((new XMLSerializer()).serializeToString(doc));
     },
 
-
-
     renderPreviousResults: function (historyType) {
 
         let historyContainer = document.getElementById("history-container");
@@ -361,7 +359,7 @@ const commonFunctions = {
         } else {
             // Add the "Download as single JSON" button
             resultHTML = `
-                <div class="text-end">
+                <div class="text-end mt-2">
                     <button id="downloadJsonBtnHistory" class="btn btn-secondary mb-3">Download all previous results</button>
                 </div>
                 ${resultHTML}
@@ -446,6 +444,33 @@ const commonFunctions = {
             reader.readAsText(file);
         });
     },
+
+    // Function to add event listeners to the radio buttons
+    addViewModeEventListeners: function () {
+        document.getElementById('viewModeSwitch').addEventListener('change', function () {
+            let detailedViews = document.querySelectorAll('.detailed-view');
+            let compactViews = document.querySelectorAll('.compact-view');
+
+            if (!this.checked) {
+                detailedViews.forEach(view => {
+                    view.style.display = '';
+                });
+
+                compactViews.forEach(view => {
+                    view.style.display = 'none';
+                });
+
+            } else {
+                detailedViews.forEach(view => {
+                    view.style.display = 'none';
+                });
+
+                compactViews.forEach(view => {
+                    view.style.display = '';
+                });
+            }
+        });
+    }
 };
 
 export { commonFunctions };

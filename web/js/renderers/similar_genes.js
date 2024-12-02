@@ -118,6 +118,7 @@ const similarGenesRenderer = {
                             </form>
                         </div>
                     </div>
+                        <div id="cvSwitchDiv"></div>
                 </div>
             </div>
         </div>
@@ -143,15 +144,19 @@ const similarGenesRenderer = {
                     <div class="card-header py-3">
                         <div class="row">
                             <div class="col-12 col-sm-8 col-md-7 col-lg-8 pt-2">
-                                <div class="simgenes-diagram">
+                                <div class="simgenes-diagram detailed-view">
                                     <div class="simgenes-center">
                                         <img src="/images/uniprot_logo.png" alt="uniprot_logo" class="simgenes-logo">
-                                        <span class="simgenes-id">${clusterIdentity}% similar genes</span>
+                                        <span class="simgenes-id text-muted ms-2">${clusterIdentity}% similar genes</span>
                                     </div>
                                         <h5>${id}</h5>
                                 </div>
+                                <div class="simgenes compact-view" style="display: none;">
+                                    <span style="font-size: 1.35em;">${id}</span>
+                                    <span class="text-muted ms-2 text-start" style="font-size: 0.875em;">${clusterIdentity}% similar genes</span>
+                                </div>
                             </div>
-                            <div class="col-12 col-sm-4 col-md-5 col-lg-4 text-end my-auto">
+                            <div class="col-12 col-sm-4 col-md-5 col-lg-4 text-end text-md-end text-center my-auto mt-3 mt-md-1">
                                 <button class="btn btn-secondary" type="button" id="downloadButton">
                                     <a href="${url}" download="${id}_similar_genes_${clusterIdentity}.json" style="color: inherit; text-decoration: none;">Download JSON</a>
                                 </button>      

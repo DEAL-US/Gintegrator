@@ -37,6 +37,12 @@ async function loadIdenticalProteins() {
     // Append the form to the form container
     identicalProteinsFormContainer.innerHTML = identicalProteinRenderer.ipForm();
 
+    // Append the compact view switch to the form container
+    document.getElementById('cvSwitchDiv').innerHTML = commonRenderer.compactViewSwitch();
+
+    // Add event listeners to the compact view buttons
+    commonFunctions.addViewModeEventListeners();
+
     // Append the explanations to the explanations container
     explanationsContainer.innerHTML = identicalProteinRenderer.ipExplanations();
 
@@ -79,6 +85,8 @@ async function loadIdenticalProteins() {
 
         // Add the download JSON button
         identicalProteinsDiv.innerHTML += commonRenderer.downloadJSONButton();
+
+        identicalProteinsDiv.innerHTML += commonRenderer.horizontalDivider();
 
         let allResults = new Map();
 
