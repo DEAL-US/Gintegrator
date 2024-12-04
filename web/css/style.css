@@ -235,6 +235,28 @@ footer {
     border-color: transparent transparent transparent black;
 }
 
+
+.translation-arrow-short {
+    display: block;
+    position: relative;
+    width: 40px; /* adjust as needed */
+    border-bottom: 3px solid black; /* adjust as needed */
+    top: 10px; /* adjust as needed */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.translation-arrow-short::after {
+    content: '';
+    position: absolute;
+    right: -9px; /* adjust as needed */
+    top: -5px; /* adjust as needed */
+    border-width: 7px; /* adjust as needed */
+    border-style: solid;
+    border-color: transparent transparent transparent black;
+}
+
+
 /* ------------------------------------------------- */
 
 .logo-container {
@@ -293,3 +315,46 @@ footer {
 #history-params:empty {
     display: none;
 }
+
+/* ------------------------------------------------- */
+
+@media (min-width: 1600px) {
+    .col-xxxl-4 {
+        flex: 0 0 auto;
+        width: 30%;
+    }
+    .col-xxxl-5 {
+        flex: 0 0 auto;
+        width: 41.666667%;
+    }
+    .col-xxxl-6 {
+        flex: 0 0 auto;
+        width: 50%;
+    }
+    .col-xxxl-7 {
+        flex: 0 0 auto;
+        width: 58.333333%;
+    }
+    .col-xxxl-8 {
+        flex: 0 0 auto;
+        width: 66.666667%;
+    }
+    .col-xxxl-9 {
+        flex: 0 0 auto;
+        width: 75%;
+    }
+    .col-xxxl-10 {
+        flex: 0 0 auto;
+        width: 83.333333%;
+    }
+    .col-xxxl-11 {
+        flex: 0 0 auto;
+        width: 91.666667%;
+    }
+    .col-xxxl-12 {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+}
+
+/* ------------------------------------------------- */

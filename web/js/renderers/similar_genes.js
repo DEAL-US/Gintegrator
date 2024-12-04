@@ -138,8 +138,7 @@ const similarGenesRenderer = {
         let url = URL.createObjectURL(blob);
 
         let listHTML = `
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-12 col-lg-9 col-xl-7 mx-auto">
+            <div class="col-12 col-md-12 col-lg-6 col-xl-5 col-xxl-5 col-xxxl-4 mb-3">
                 <div class="card mt-2 mx-auto bg-light">
                     <div class="card-header py-3">
                         <div class="row">
@@ -156,7 +155,7 @@ const similarGenesRenderer = {
                                     <span class="text-muted ms-2 text-start" style="font-size: 0.875em;">${clusterIdentity}% similar genes</span>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-4 col-md-5 col-lg-4 text-end text-md-end text-center my-auto mt-3 mt-md-1">
+                            <div class="col-12 col-sm-4 col-md-5 col-lg-4 text-end text-md-end text-center my-auto">
                                 <button class="btn btn-secondary" type="button" id="downloadButton">
                                     <a href="${url}" download="${id}_similar_genes_${clusterIdentity}.json" style="color: inherit; text-decoration: none;">Download JSON</a>
                                 </button>      
@@ -218,7 +217,7 @@ const similarGenesRenderer = {
                     </div>
                 </div>
             </div>
-        </div>
+        
         <br>`;
         return listHTML;
     },

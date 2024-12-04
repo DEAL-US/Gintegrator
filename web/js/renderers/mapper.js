@@ -160,12 +160,11 @@ const mapperRenderer = {
         };
     
         let listHTML = `
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-12 col-lg-9 col-xl-7 mx-auto">
+            <div class="col-12 col-md-12 col-lg-6 col-xl-5 col-xxl-5 col-xxxl-4 mb-3">
                 <div class="card mt-2 mx-auto bg-light">
                     <div class="card-header py-3">
                         <div class="row">
-                            <div class="col-md-7 pt-2">
+                            <div class="col-md-7 col-sm-7 pt-2">
                                 <div class="translation-diagram detailed-view">
                                     <img src="/images/${fromDb}_logo.png" alt="${fromDb} logo" class="translation-logo">
                                     <div class="translation-center">
@@ -176,11 +175,11 @@ const mapperRenderer = {
                                 </div>
                                 <div class="translation-diagram compact-view" style="display: none;">
                                     <span class="translation-id">${id}</span>
-                                    <span class="translation-arrow mb-3"></span>
+                                    <span class="translation-arrow-short mb-3"></span>
                                     <span class="translation-id">${dbDict[toDb]}</span>
                                 </div>
                             </div>
-                            <div class="col-md-5 text-end my-auto">
+                            <div class="col text-end text-center my-auto">
                                 <button class="btn btn-secondary" type="button" id="downloadButton">
                                     <a href="${url}" download="${id}_${fromDb}_to_${toDb}.json" style="color: inherit; text-decoration: none;">Download JSON</a>
                                 </button>      
@@ -281,9 +280,7 @@ const mapperRenderer = {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        <br>`;
+                </div>`;
         return listHTML;
     }
 };

@@ -100,6 +100,8 @@ async function loadSimilarGenes() {
 
         let allResults = new Map();
 
+        similarGenesDiv.innerHTML += '<div class="row justify-content-center" id="resultsGrid"></div>';
+
         // Loop over the identifiers
         for (let i = 0; i < ids.length; i++) {
             let id = ids[i];
@@ -144,7 +146,10 @@ async function loadSimilarGenes() {
                         similarGenesDiv.innerHTML += commonRenderer.noResultsFound(id);
                     } else {
                         // Append the result to the results container
-                        similarGenesDiv.innerHTML += similarGenesRenderer.asIDs(result, clusterNames, id, clusterIdentity);
+                        document.getElementById('resultsGrid').innerHTML += similarGenesRenderer.asIDs(result, clusterNames, id, clusterIdentity);
+
+                        // Refresh the view mode: checks if the compact view is enabled and updates the results
+                        commonFunctions.refreshViewMode();
 
                         // Add the result to the history if it is not already there
                         if (!localStorage.getItem(key)) {
@@ -153,6 +158,9 @@ async function loadSimilarGenes() {
 
                         // Store the result in localStorage
                         localStorage.setItem(key, JSON.stringify(result));
+
+                        // Render previous results from localStorage
+                        commonFunctions.renderPreviousResults('sgenes');
 
                         // Store the result in allResults
                         allResults.set(requestData, result[0]);

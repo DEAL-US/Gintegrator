@@ -90,6 +90,8 @@ async function loadIdenticalProteins() {
 
         let allResults = new Map();
 
+        identicalProteinsDiv.innerHTML += '<div class="row justify-content-center" id="resultsGrid"></div>';
+
         // Loop over the identifiers
         for (let i = 0; i < ids.length; i++) {
             let id = ids[i];
@@ -131,7 +133,10 @@ async function loadIdenticalProteins() {
                         result[0] = result[0].filter((value, index, self) => self.indexOf(value) === index);
 
                         // Append the result to the results container
-                        identicalProteinsDiv.innerHTML += identicalProteinRenderer.asIDs(result, id);
+                        document.getElementById('resultsGrid').innerHTML += identicalProteinRenderer.asIDs(result, id);
+
+                        // Refresh the view mode: checks if the compact view is enabled and updates the results
+                        commonFunctions.refreshViewMode();
 
                         // Add the result to the history if it is not already there
                         if (!localStorage.getItem(key)) {
@@ -140,6 +145,9 @@ async function loadIdenticalProteins() {
 
                         // Store the result in localStorage
                         localStorage.setItem(key, JSON.stringify(result));
+
+                        // Render previous results from localStorage
+                        commonFunctions.renderPreviousResults('iproteins');
 
                         // Store the result in allResults
                         allResults.set(requestData, result[0]);
@@ -151,7 +159,10 @@ async function loadIdenticalProteins() {
                     } else {
 
                         // Append the result to the results container
-                        identicalProteinsDiv.innerHTML += identicalProteinRenderer.asDataframe(result, id);
+                        document.getElementById('resultsGrid').innerHTML += identicalProteinRenderer.asDataframe(result, id);
+
+                        // Refresh the view mode: checks if the compact view is enabled and updates the results
+                        commonFunctions.refreshViewMode();
 
                         // Add the result to the history if it is not already there
                         if (!localStorage.getItem(key)) {
@@ -160,6 +171,9 @@ async function loadIdenticalProteins() {
 
                         // Store the result in localStorage
                         localStorage.setItem(key, JSON.stringify(result));
+
+                        // Render previous results from localStorage
+                        commonFunctions.renderPreviousResults('iproteins');
 
                         // Convert the result (dataframe) to CSV
                         let csv = '';

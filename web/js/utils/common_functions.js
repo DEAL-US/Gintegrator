@@ -241,11 +241,11 @@ const commonFunctions = {
             resultHTML = this.addHistoryParameters(resultHTML, requestData);
         }
 
-        let historyAccordionBody = document.getElementById('historyAccordionBody');
-        if (historyAccordionBody.innerHTML === '<div style="opacity: 0.5">No results yet.</div>') {
-            historyAccordionBody.innerHTML = '';
+        let previousResultsGrid = document.getElementById('previousResultsGrid');
+        if (previousResultsGrid.innerHTML === '<div style="opacity: 0.5">No results yet.</div>') {
+            previousResultsGrid.innerHTML = '';
         }
-        historyAccordionBody.innerHTML += resultHTML;
+        previousResultsGrid.innerHTML += resultHTML;
     },
 
     // Function to add the parameters used in each request in the history 
@@ -290,16 +290,18 @@ const commonFunctions = {
 
         // Initialize historyContainer with a bootstrap collapsible element
         historyContainer.innerHTML = `
-            <div class="accordion mb-3" id="historyAccordion">
+            <div class="accordion mb-3 mt-3" id="historyAccordion">
                 <div class="accordion-item">
                     <h2 class="accordion-header" >
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#historyCollapse" aria-expanded="false" aria-controls="historyCollapse" style="background-color: #f5f5f5; color: #000; font-size:0.6em">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#historyCollapse" aria-expanded="false" aria-controls="historyCollapse" style="background-color: #d7d8db; color: #000; font-size:0.6em">
                             Previous results
                         </button>
                     </h2>
                     <div id="historyCollapse" class="accordion-collapse collapse" data-bs-parent="#historyAccordion">
                         <div class="accordion-body" id="historyAccordionBody" style="max-height: 500px; overflow:auto; background-color: #fafafa;">
-                            No results yet.
+                            <div class="row justify-content-center" id="previousResultsGrid">
+                                No results yet.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -309,7 +311,7 @@ const commonFunctions = {
         let keys = Object.keys(localStorage);
 
         let resultHTML = '';
-        let historyAccordionBody = document.getElementById('historyAccordionBody');
+        let historyAccordionBody = document.getElementById('previousResultsGrid');
         let allResults = new Map();
 
         // Loop over the keys
@@ -470,6 +472,32 @@ const commonFunctions = {
                 });
             }
         });
+    },
+
+    // Function to check the state of the viewModeSwitch and apply styles
+    refreshViewMode: function () {
+        let viewModeSwitch = document.getElementById('viewModeSwitch');
+        let detailedViews = document.querySelectorAll('.detailed-view');
+        let compactViews = document.querySelectorAll('.compact-view');
+
+        if (!viewModeSwitch.checked) {
+            detailedViews.forEach(view => {
+                view.style.display = '';
+            });
+
+            compactViews.forEach(view => {
+                view.style.display = 'none';
+            });
+
+        } else {
+            detailedViews.forEach(view => {
+                view.style.display = 'none';
+            });
+
+            compactViews.forEach(view => {
+                view.style.display = '';
+            });
+        }
     }
 };
 

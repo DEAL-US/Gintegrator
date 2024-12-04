@@ -43,7 +43,7 @@ async function loadMapper() {
     // Append the explanations to the explanations container
     explanationsContainer.innerHTML = mapperRenderer.mapperExplanations();
 
-    // Append the form to the employees container
+    // Append the form to the container
     formContainer.innerHTML = mapperRenderer.mapperForm();
 
     // Append the compact view switch to the form container
@@ -169,6 +169,8 @@ async function loadMapper() {
 
         let allResults = new Map();
 
+        resultsContainer.innerHTML += '<div class="row justify-content-center" id="resultsGrid"></div>';
+
         // Loop over the identifiers
         for (let i = 0; i < ids.length; i++) {
             let id = ids[i];
@@ -251,7 +253,10 @@ async function loadMapper() {
                     }
 
                     // Append the result to the results container
-                    resultsContainer.innerHTML += mapperRenderer.asIDs(result, id, fromDb, toDb);
+                    document.getElementById('resultsGrid').innerHTML += mapperRenderer.asIDs(result, id, fromDb, toDb);
+
+                    // Refresh the view mode: checks if the compact view is enabled and updates the results
+                    commonFunctions.refreshViewMode();
 
                     // Add the result to the history if it is not already there
                     if (!localStorage.getItem(key)) {
@@ -260,6 +265,9 @@ async function loadMapper() {
 
                     // Store the result in localStorage
                     localStorage.setItem(key, JSON.stringify(result));
+
+                    // Render previous results from localStorage
+                    commonFunctions.renderPreviousResults('mapper');
 
                     // Store the result in allResults
                     allResults.set({ id, fromDb, toDb, exhaustiveMapping, detailedMapping, similarGenes, identicalProteins }, result);

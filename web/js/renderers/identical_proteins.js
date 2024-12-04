@@ -91,13 +91,11 @@ const identicalProteinRenderer = {
         }
 
         let listHTML = `
-
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-12 col-lg-9 col-xl-7 mx-auto">
+            <div class="col-12 col-md-12 col-lg-6 col-xl-5 col-xxl-5 col-xxxl-4 mb-3">
                 <div class="card mt-2 mx-auto bg-light">
                     <div class="card-header py-3">
                         <div class="row">
-                            <div class="col-12 col-sm-8 col-md-7 col-lg-8 pt-2">
+                            <div class="col pt-2">
                                 <div class="iproteins-diagram detailed-view">
                                     <img src="/images/ncbiProteinGroups_logo.png" alt="ncbiProteinGroups_logo" class="iproteins-logo">
                                         <h5>${id}</h5>
@@ -107,7 +105,7 @@ const identicalProteinRenderer = {
                                     <span class="text-muted ms-2 text-start" style="font-size: 0.875em;">NCBI Identical Proteins</span>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-4 col-md-5 col-lg-4 text-end my-auto">
+                            <div class="col text-end text-center my-auto">
                                 <button class="btn btn-secondary" type="button" id="downloadButton">
                                     <a href="${url}" download="${id}_identical_proteins_ids.json" style="color: inherit; text-decoration: none;">Download JSON</a>
                                 </button>      
@@ -134,8 +132,6 @@ const identicalProteinRenderer = {
                     </div>
                 </div>
             </div>
-        </div>
-        <br>
         `;
         return listHTML;
     },
@@ -156,12 +152,11 @@ const identicalProteinRenderer = {
 
         let tableHTML = `
 
-        <div class="row justify-content-center">
-            <div class="col-lg-12 mx-auto">
+            <div class="col-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 col-xxxl-6 mb-3">
                 <div class="card mt-2 mx-auto bg-light">
                     <div class="card-header py-3">
                         <div class="row justify-content-center">
-                            <div class="col-12 col-sm-8 col-md-9 col-lg-9 pt-2">
+                            <div class="col-12 col-sm-8 col-md-7 col-lg-8 pt-2">
                                 <div class="iproteins-diagram detailed-view">
                                     <img src="/images/ncbiProteinGroups_logo.png" alt="ncbiProteinGroups_logo" class="iproteins-logo">
                                         <h5>${id}</h5>
@@ -171,7 +166,7 @@ const identicalProteinRenderer = {
                                     <span class="text-muted ms-2 text-start" style="font-size: 0.875em;">NCBI Identical Proteins</span>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-4 col-md-3 col-lg-3 text-end my-auto">
+                            <div class="col text-end text-center my-auto">
                                 <button class="btn btn-secondary" type="button" id="downloadButton">
                                     <a href="${url}" download="${id}_identical_proteins_dataframe.csv" style="color: inherit; text-decoration: none;">Download CSV</a>
                                 </button>      
@@ -187,32 +182,31 @@ const identicalProteinRenderer = {
 
         keys = ['Id', 'Source', 'Nucleotide.Accession', 'Start', 'Stop', 'Strand', 'Protein', 'Protein.Name', 'Organism', 'Strain', 'Assembly'];
         tableHTML += `
-            <div class="table-responsive mt-2" style="position: relative; max-height: 500px; overflow: auto; border: 2px solid #eee;">
-            <table class="table ">
-                <thead style="position: sticky; top: 0; background-color: white">
-                        <tr style="box-shadow: 0 1px 0 #aaa;">
-                            <th>Id</th>
-                            <th>Source</th>
-                            <th>Nucleotide.Accession</th>
-                            <th>Start</th>
-                            <th>Stop</th>
-                            <th>Strand</th>
-                            <th>Protein</th>
-                            <th>Protein.Name</th>
-                            <th>Organism</th>
-                            <th>Strain</th>
-                            <th>Assembly</th>
-                        </tr>
-                    </thead>`;
-        tableHTML += '<tbody>' + result.map(row => '<tr>' + keys.map(key => `<td>${row[key] || ''}</td>`).join('') + '</tr>').join('') + '</tbody>';
-        tableHTML += `        
-                                </table>
-                            </div>                        
-                        </div>
+                        <div class="table-responsive mt-2" style="position: relative; max-height: 500px; overflow: auto; border: 2px solid #eee;">
+                            <table class="table table-striped table-hover">
+                                <thead style="position: sticky; top: 0; background-color: white">
+                                        <tr style="box-shadow: 0 1px 0 #aaa;">
+                                            <th>Id</th>
+                                            <th>Source</th>
+                                            <th>Nucleotide.Accession</th>
+                                            <th>Start</th>
+                                            <th>Stop</th>
+                                            <th>Strand</th>
+                                            <th>Protein</th>
+                                            <th>Protein.Name</th>
+                                            <th>Organism</th>
+                                            <th>Strain</th>
+                                            <th>Assembly</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${result.map(row => '<tr>' + keys.map(key => `<td>${row[key] || ''}</td>`).join('') + '</tr>').join('')}
+                                    </tbody>
+                            </table>
+                        </div>    
                     </div>
                 </div>
-            </div>
-        <br>`;
+            </div>`;
         return tableHTML;
     },
 
