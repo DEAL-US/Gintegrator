@@ -139,11 +139,11 @@ async function loadSimilarGenes() {
                     (Array.isArray(result) && result.length === 0) ||
                     (Array.isArray(result) && result.length === 1 && Object.keys(result[0]).length === 0) ||
                     (Array.isArray(result) && result.length === 1 && Object.values(result[0])[0] && Object.keys(Object.values(result[0])[0]).length === 0)) {
-                    similarGenesDiv.innerHTML += commonRenderer.noResultsFound(id);
+                    document.getElementById('resultsGrid').innerHTML += commonRenderer.noResultsFound(id);
                 } else {
                     // Append the result to the similarGenesDiv container
                     if (result === null || result.length === 0 || (result.length === 1 && Object.keys(result[0]).length === 0)) {
-                        similarGenesDiv.innerHTML += commonRenderer.noResultsFound(id);
+                        document.getElementById('resultsGrid').innerHTML += commonRenderer.noResultsFound(id);
                     } else {
                         // Append the result to the results container
                         document.getElementById('resultsGrid').innerHTML += similarGenesRenderer.asIDs(result, clusterNames, id, clusterIdentity);

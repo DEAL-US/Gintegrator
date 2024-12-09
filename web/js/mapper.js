@@ -222,7 +222,7 @@ async function loadMapper() {
                 if ((result.constructor == Array && result[0] == null) ||
                     (result.constructor == Array && result[0].constructor == Object && Object.keys(result[0]).length === 0) ||
                     (result.constructor == Object && Object.keys(result).length === 0)) {
-                    resultsContainer.innerHTML += commonRenderer.noResultsFound(id);
+                    document.getElementById('resultsGrid').innerHTML += commonRenderer.noResultsFound(id);
                 } else {
 
                     // If detailedMapping == "TRUE" parse result dictionary and replace keys '1.0', '0.9', '0.5' with '100%', '90%', '50%'

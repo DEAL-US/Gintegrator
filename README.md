@@ -7,12 +7,25 @@ In addition to identifier mapping, Gintegrator also offers the retrieval of NCBI
 
 This application is built upon the ginmappeR R language package, available at the <a     href="https://bioconductor.org/packages/ginmappeR">Bioconductor repository</a>. The package provides the core functionalities for identifier translation, which this web application makes accessible through a user-friendly interface.
 
-### Usage
-#### Online
+To use Gintegrator, you have several options:
+
+## Use it online
 
 Visit the online <a href="https://gin.us.es">Gintegrator app</a> deployment.
 
-#### Local
+## Mount it as a Docker container
+
+1. <b>Download Gintegrator</b> Github project.
+
+2. <b>Build and launch the Docker app</b> in the root folder of the project. The created container has two services: the ginmappeR API service at port 1234 and the Gintegrator web app at port 8080.
+
+```
+docker-compose up --build
+```
+
+3. <b>Access the web app</b> at ``http://localhost:8080``.
+
+## Use it locally installed (manually)
 
 1. <b>Install ginmappeR R package</b> from Bioconductor and plumber from CRAN in your R environment:
 
@@ -46,7 +59,7 @@ plumber::plumb_api("ginmappeR", "ginmappeR-API-server")$run(port=1234)
 ```
 <br>
 
-3. <b>Download Gintegrator</b> project and configure `/web/js/api/common.js` with the selected port (by default it is ``1234``):
+3. <b>Download Gintegrator</b> Github project and configure `/web/js/api/common.js` with the selected port (by default it is ``1234``):
 
 ```
 const BASE_URL = "http://localhost:1234";
@@ -61,7 +74,7 @@ $ silence run
 ```
 <br>
 
-5. <b>Access the web app</b> at ``localhost:8080`` (default port in Silence, can be configured in file ``settings.py``) or at the defined port by your web server.
+5. <b>Access the web app</b> at ``http://localhost:8080`` (default port in Silence, can be configured in file ``settings.py``) or at the defined port by your web server.
 
 ### License 
 

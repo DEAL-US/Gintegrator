@@ -127,7 +127,7 @@ async function loadIdenticalProteins() {
                 // Append the result to the identical_proteins container
                 if (format === 'ids') {
                     if (result.length === 1 && Object.keys(result[0]).length === 0 || result[0].length === 0 || result === null) {
-                        identicalProteinsDiv.innerHTML += commonRenderer.noResultsFound(id);
+                        document.getElementById('resultsGrid').innerHTML += commonRenderer.noResultsFound(id);
                     } else {
                         // Access the inner array and remove duplicated identifiers
                         result[0] = result[0].filter((value, index, self) => self.indexOf(value) === index);
@@ -155,7 +155,7 @@ async function loadIdenticalProteins() {
                     }
                 } else { // format === 'dataframe'
                     if (Object.keys(result).length === 0) {
-                        identicalProteinsDiv.innerHTML += commonRenderer.noResultsFound(id);
+                        document.getElementById('resultsGrid').innerHTML += commonRenderer.noResultsFound(id);
                     } else {
 
                         // Append the result to the results container

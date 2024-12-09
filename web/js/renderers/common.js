@@ -73,8 +73,7 @@ const commonRenderer = {
 
     noResultsFound: function (id) {
         return `
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-12 col-lg-6 col-xl-5 col-xxl-5 col-xxxl-4">
+            <div class="col-12 col-md-12 col-lg-6 col-xl-5 col-xxl-5 col-xxxl-4 mb-3">
                 <div class="card mt-2 mx-auto bg-light">
                     <div class="card-header">
                         <div class="row">
@@ -93,9 +92,7 @@ const commonRenderer = {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <br>`;
+            </div>`;
     },
 
     loadingSpinner: function (processed, total, currentId) {
